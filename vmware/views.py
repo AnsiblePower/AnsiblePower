@@ -34,3 +34,4 @@ def show_vms(request):
     vc = connect_vcenter(vcenter)
     print vc.get_registered_vms()
     vc.disconnect()
+##
