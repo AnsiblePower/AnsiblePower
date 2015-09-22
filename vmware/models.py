@@ -18,6 +18,10 @@ class Vm(models.Model):
     date_created = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)
     vm_name = models.CharField(max_length=255)
+    vm_ip = models.GenericIPAddressField(null=True)
+    vm_subnet = models.GenericIPAddressField(null=True)
+    vm_gateway = models.GenericIPAddressField(null=True)
+    vm_hostname = models.CharField(max_length=255, null=True)
     vcenter = models.ForeignKey(Vcenter)
 
     def __unicode__(self):

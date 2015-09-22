@@ -11,16 +11,16 @@
     <title>Theme Template for Bootstrap</title>
 
     <!-- Bootstrap core CSS -->
-{#    <link href="../../dist/css/bootstrap.min.css" rel="stylesheet">#}
+    {#    <link href="../../dist/css/bootstrap.min.css" rel="stylesheet">#}
     <!-- Bootstrap theme -->
-{#    <link href="../../dist/css/bootstrap-theme.min.css" rel="stylesheet">#}
+    {#    <link href="../../dist/css/bootstrap-theme.min.css" rel="stylesheet">#}
 
     <!-- Custom styles for this template -->
-{#    <link href="theme.css" rel="stylesheet">#}
+    {#    <link href="theme.css" rel="stylesheet">#}
 
     <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
     <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
-{#    <script src="../../assets/js/ie-emulation-modes-warning.js"></script>#}
+    {#    <script src="../../assets/js/ie-emulation-modes-warning.js"></script>#}
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -51,28 +51,49 @@
             </tr>
             </thead>
             <tbody>
-            {% for vcenter_host in vcenter_list %}
+            {% for vcenter_host in object_list %}
                 <tr>
                     <td>{{ forloop.counter }}</td>
                     <td>{{ vcenter_host.host_name }}</td>
                     <td>{{ vcenter_host.date_created|date:"Y-m-d H:i:s" }}</td>
                     <td>{{ vcenter_host.date_modified|date:"Y-m-d H:i:s" }}</td>
                     <td>
-                        <form action="{% url 'vmware:showvms' %}" method="post">
-                            {% csrf_token %}
+                         <form action="{% url 'vmware:vcenterVmList' %}" method="get">
+{#                            {% csrf_token %}#}
                             <input type="hidden" name="vc_id" value="{{ vcenter_host.id }}" />
-{#                            {% for choice in question.choice_set.all %}#}
-{#                                <input type="radio" name="choice" id="choice{{ forloop.counter }}"#}
-{#                                       value="{{ choice.id }}"/>#}
-{#                                <label for="choice{{ forloop.counter }}">{{ choice.choice_text }}</label><br/>#}
-{#                            {% endfor %}#}
-                            <input type="submit" value="Show"/>
+                            <button type="submit" class="btn btn-info">Show VMs</button>
+                        </form>
+                    </td>
+                    <td>
+                         <form action="{% url 'vmware:vcenterTemplateList' %}" method="get">
+{#                            {% csrf_token %}#}
+                            <input type="hidden" name="vc_id" value="{{ vcenter_host.id }}" />
+                            <button type="submit" class="btn btn-info">Show Templates</button>
                         </form>
                     </td>
                 </tr>
             {% endfor %}
             </tbody>
         </table>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <form action="{% url 'vmware:pushfile' %}" method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">PushFile</button>
+        </form>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <a href="cloneform" class="btn btn-info">CloneForm</a>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <a href="createvm" class="btn btn-info">CreateVM</a>
     </div>
 </div>
 
