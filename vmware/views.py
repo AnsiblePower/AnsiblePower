@@ -20,17 +20,15 @@ class VmListView(generic.ListView):
     template_name = 'vmware/vmList.html'
 
 
-# class VmCreateView(generic.CreateView):
-#     model = Vm
-#     template_name = 'vmware/vmCreate.html'
-#     fields = ['vm_name']
-
-
 def createVmView(request):
     if request.method == 'POST':
         form = CreateVmForm(request.POST)
         if form.is_valid():
-            #TODO: Write Creating VM in model
+            vcenter = Vcenter.objects.get(pk=form.cleaned_data['vcenters'])
+            vm = Vm(vm_name=form.cleaned_data['vm_name'], vcenter=vcenter, vm_ip=form.cleaned_data['vm_ip'],
+                    vm_subnet=form.cleaned_data['vm_subnet'], vm_gateway=form.cleaned_data['vm_gateway'],
+                    vm_hostname=form.cleaned_data['vm_hostname'])
+            vm.save()
             return HttpResponseRedirect('/vmware')
     else:
         form = CreateVmForm()
@@ -57,7 +55,7 @@ def vcenterTemplateList(request):
 def vcenterVmList(request):
     vcenter = Vcenter.objects.get(pk=request.GET['vc_id'])
     vm_list = vmvc.get_vms(vcenter)
-    return render(request, 'vmware/vmList.html', {"vms": vm_list})
+    return render(request, 'vmware/vmList.html', {"object_list": vm_list})
 
 
 def pushFile(request):

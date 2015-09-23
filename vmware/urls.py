@@ -3,7 +3,8 @@ from django.conf.urls import url
 from . import views
 
 urlpatterns = [
-    url(r'^$', views.VcenterListView.as_view(), name='index'),
+    url(r'^$', views.VmListView.as_view(), name='index'),
+    url(r'^vcenterlist/$', views.VcenterListView.as_view(), name='vcenterList'),
     url(r'^vmList/$', views.VmListView.as_view(), name='vmList'),
     url(r'^vcentervmlist/$', views.vcenterVmList, name='vcenterVmList'),
     url(r'^vcentertemplatelist/$', views.vcenterTemplateList, name='vcenterTemplateList'),
