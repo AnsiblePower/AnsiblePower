@@ -46,13 +46,16 @@
             <tr>
                 <th>#</th>
                 <th>VM Name</th>
+                <th>VM Hostname</th>
             </tr>
             </thead>
             <tbody>
             {% for vm in object_list %}
                 <tr>
                     <td>{{ forloop.counter }}</td>
-                    <td>{{ vm }}</td>
+                    <td><a href="{% url 'vmware:vmDetail' pk=vm.pk %}">{{ vm.vm_name }}</a></td>
+                    <td>{{ vm.vm_hostname }}</td>
+
                 </tr>
             {% endfor %}
             </tbody>

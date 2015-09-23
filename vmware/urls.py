@@ -13,4 +13,5 @@ urlpatterns = [
     url(r'^clonevm/$', views.cloneVm, name='cloneVM'),
     url(r'^createvm/$', views.createVmView, name='createVmView'),
     url(r'^cloneform/gettemplatesjs', views.getTemplateJs, name='getTemplateJs'),
+    url(r'^vmdetail/(?P<pk>\d+)/', views.VmDetail.as_view(), name='vmDetail'),
 ]

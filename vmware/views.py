@@ -8,7 +8,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 import vmvc
 from .forms import ClonetForm, CreateVmForm
 from django.views.generic.edit import FormView
-
+import github
 
 class VcenterListView(generic.ListView):
     template_name = 'vmware/vcenterList.html'
@@ -19,6 +19,15 @@ class VmListView(generic.ListView):
     model = Vm
     template_name = 'vmware/vmList.html'
 
+
+class VmDetail(generic.DetailView):
+    model = Vm
+    template_name = 'vmware/vmDetail.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(VmDetail, self).get_context_data(**kwargs)
+        context['repoList'] = github.getRepos()
+        return context
 
 def createVmView(request):
     if request.method == 'POST':
