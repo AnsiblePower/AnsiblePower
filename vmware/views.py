@@ -26,18 +26,6 @@ class VmCreateView(generic.CreateView):
     fields = ['vm_name']
 
 
-# class CloneView(FormView):
-#     template_name = 'vmware/clone.html'
-#     form_class = ClonetForm
-#     success_url = '/thanks/'
-#
-#     # def form_valid(self, form):
-#     #     # This method is called when valid form data has been POSTed.
-#     #     # It should return an HttpResponse.
-#     #     form.send_email()
-#     #     return super(ContactView, self).form_valid(form)
-
-
 def cloneView(request):
     if request.method == 'POST':
         form = ClonetForm(request.POST)
