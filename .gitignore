@@ -1,0 +1,6 @@
+.idea/dataSources.local.xml
+.idea/deployment.xml
+.idea/deployment.xml
+db.sqlite3
+*.pyc
+/.idea
