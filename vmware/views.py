@@ -6,7 +6,7 @@ from django.views import generic
 from pysphere import VIServer
 from django.http import HttpResponse, HttpResponseRedirect
 import vmvc
-from .forms import ClonetForm
+from .forms import ClonetForm, CreateVmForm
 from django.views.generic.edit import FormView
 
 
@@ -20,10 +20,21 @@ class VmListView(generic.ListView):
     template_name = 'vmware/vmList.html'
 
 
-class VmCreateView(generic.CreateView):
-    model = Vm
-    template_name = 'vmware/vmCreate.html'
-    fields = ['vm_name']
+# class VmCreateView(generic.CreateView):
+#     model = Vm
+#     template_name = 'vmware/vmCreate.html'
+#     fields = ['vm_name']
+
+
+def createVmView(request):
+    if request.method == 'POST':
+        form = CreateVmForm(request.POST)
+        if form.is_valid():
+            #TODO: Write Creating VM in model
+            return HttpResponseRedirect('/vmware')
+    else:
+        form = CreateVmForm()
+    return render(request, 'vmware/createVmForm.html', {'form': form})
 
 
 def cloneView(request):
@@ -74,4 +85,3 @@ def cloneVm(request):
     template.clone(request.POST['vm_name'], sync_run=False, power_on=False, resourcepool=resource_pool)
     vc.disconnect()
     return HttpResponse("<p>Done!<p>")
-#

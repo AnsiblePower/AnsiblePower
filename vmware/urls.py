@@ -11,6 +11,4 @@ urlpatterns = [
     url(r'^cloneform/$', views.cloneView, name='cloneForm'),
     url(r'^clonevm/$', views.cloneVm, name='cloneVM'),
     url(r'^createvm/$', views.VmCreateView.as_view(), name='createVM'),
-
-
 ]
