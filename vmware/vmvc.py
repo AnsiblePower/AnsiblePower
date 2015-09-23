@@ -11,7 +11,8 @@ def connect_vcenter(vcenter):
         #ssl._create_default_https_context = ssl._create_unverified_context
         server.connect(vcenter.host_name, vcenter.user_name, vcenter.user_password)
         return server
-    except AttributeError:
+    except AttributeError, e:
+        print "ERROR: " + str(e)
         pass
     else:
         ssl._create_default_https_context = _create_unverified_https_context
@@ -38,9 +39,10 @@ def get_vms(vcenter):
     vc.disconnect()
     return vm_names
 
+
 def get_vcenters():
-    result = []
+    result = [('', ''), ]
     all_vcenters = Vcenter.objects.all()
     for vcenter in all_vcenters:
-        result.append((vcenter._get_pk_val(), vcenter.host_name))
+        result.append((vcenter.pk, vcenter.host_name))
     return result

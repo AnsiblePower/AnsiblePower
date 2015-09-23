@@ -40,11 +40,11 @@
 </head>
 <body>
 {% load crispy_forms_tags %}
-<form action="{% url 'vmware:cloneForm' %}" method="post">
+<form action="{% url 'vmware:createVmView' %}" method="post">
     {% csrf_token %}
     {{ form.as_p }}
 {#    <input type="submit" value="Clone" />#}
-    <button class="btn btn-info" type="submit">Clone</button>
+    <button class="btn btn-info" type="submit">Create</button>
 </form>
 </body>
 </html>

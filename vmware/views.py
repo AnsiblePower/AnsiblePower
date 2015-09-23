@@ -85,3 +85,13 @@ def cloneVm(request):
     template.clone(request.POST['vm_name'], sync_run=False, power_on=False, resourcepool=resource_pool)
     vc.disconnect()
     return HttpResponse("<p>Done!<p>")
+
+
+def getTemplateJs(request):
+    if request.method == 'GET':
+        templates = []
+        vcenter = Vcenter.objects.get(pk=request.GET['vcenter_id'])
+        template_list = vmvc.get_templates(vcenter)
+        for template in template_list:
+            templates.append('<option>' + template + '</option>')
+        return HttpResponse(templates)

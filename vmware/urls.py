@@ -10,5 +10,6 @@ urlpatterns = [
     url(r'^filelist/$', views.pushFile, name='pushfile'),
     url(r'^cloneform/$', views.cloneView, name='cloneForm'),
     url(r'^clonevm/$', views.cloneVm, name='cloneVM'),
-    url(r'^createvm/$', views.VmCreateView.as_view(), name='createVM'),
+    url(r'^createvm/$', views.createVmView, name='createVmView'),
+    url(r'^cloneform/gettemplatesjs', views.getTemplateJs, name='getTemplateJs'),
 ]
