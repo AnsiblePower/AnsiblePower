@@ -74,3 +74,5 @@ def cloneVm(request):
     template.clone(request.POST['vm_name'], sync_run=False, power_on=False, resourcepool=resource_pool)
     vc.disconnect()
     return HttpResponse("<p>Done!<p>")
+
+#
