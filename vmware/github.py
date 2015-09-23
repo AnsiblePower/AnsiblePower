@@ -14,6 +14,5 @@ def getRepos():
     return repoList
 
 
-
 if __name__ == "__main__":
     getRepos()
