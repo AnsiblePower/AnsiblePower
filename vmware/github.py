@@ -1,6 +1,10 @@
 __author__ = 'dborysenko'
 import requests
 import json
+import manageroles
+import os
+
+import ansible.constants as C
 
 
 def getRepos():
@@ -14,5 +18,18 @@ def getRepos():
     return repoList
 
 
+def installRole():
+    role_name = 'adriagalin.motd'
+    #manageroles.execute('init', ['-p', '/tmp', role_name])
+    manageroles.execute('install', ['-p', '/tmp', role_name, ])
+
+
+def env_var():
+    #os.environ['ANSIBLE'] = 'Hello World'
+    print C.DEFAULT_ROLES_PATH
+
+
 if __name__ == "__main__":
-    getRepos()
+    #getRepos()
+    #installRole()
+    env_var()
