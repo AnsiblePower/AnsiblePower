@@ -5,6 +5,7 @@ import manageroles
 import os
 
 import ansible.constants as C
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
 def getRepos():
@@ -19,9 +20,10 @@ def getRepos():
 
 
 def installRole():
-    role_name = 'adriagalin.motd'
+    role_path = os.path.join(BASE_DIR, 'roles')
+    role_name = 'bfmartin.ssh_known_hosts'
     #manageroles.execute('init', ['-p', '/tmp', role_name])
-    manageroles.execute('install', ['-p', '/tmp', role_name, ])
+    manageroles.execute('install', ['-p', role_path, role_name, ])
 
 
 def env_var():
@@ -31,5 +33,5 @@ def env_var():
 
 if __name__ == "__main__":
     #getRepos()
-    #installRole()
-    env_var()
+    installRole()
+    #env_var()
