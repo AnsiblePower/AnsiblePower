@@ -62,12 +62,19 @@ Vagrant.configure(2) do |config|
   # end
 
   # Enable provisioning with a shell script. Additional provisioners such as
-  # Puppet, Chef, Ansible, Salt, and Docker are also available. Please see the
+  # Puppet, Chef, Ansible, Salt,  and Docker are also available. Please see the
   # documentation for more information about their specific syntax and use.
   config.vm.provision "shell", inline: <<-SHELL
+    sudo hostname ansiblePower
     sudo apt-get install software-properties-common
     sudo apt-add-repository ppa:ansible/ansible
     sudo apt-get update
-    sudo apt-get -y install ansible
+    sudo apt-get -y install  ansible python-pip python-virtualenv python-dev
+    sudo mkdir -p /home/vagrant/ansiblePower/venv
+    sudo bash -c 'if [ ! -f "/home/vagrant/ansiblePower/venv/bin/pip" ] ; then /usr/bin/virtualenv /home/vagrant/ansiblePower/venv; fi'
+    sudo /home/vagrant/ansiblePower/venv/bin/pip install -U pip
+    sudo /home/vagrant/ansiblePower/venv/bin/pip install -r /vagrant/vagrant-env/requirements.txt
+    sudo chown -R vagrant:vagrant /home/vagrant/ansiblePower
+    sudo updatedb
   SHELL
 end
