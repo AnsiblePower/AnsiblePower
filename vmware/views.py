@@ -6,9 +6,9 @@ from django.views import generic
 from pysphere import VIServer
 from django.http import HttpResponse, HttpResponseRedirect
 import vmvc
-from .forms import ClonetForm
+from .forms import ClonetForm, CreateVmForm
 from django.views.generic.edit import FormView
-
+import github
 
 class VcenterListView(generic.ListView):
     template_name = 'vmware/vcenterList.html'
@@ -20,10 +20,28 @@ class VmListView(generic.ListView):
     template_name = 'vmware/vmList.html'
 
 
-class VmCreateView(generic.CreateView):
+class VmDetail(generic.DetailView):
     model = Vm
-    template_name = 'vmware/vmCreate.html'
-    fields = ['vm_name']
+    template_name = 'vmware/vmDetail.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(VmDetail, self).get_context_data(**kwargs)
+        context['repoList'] = github.getRepos()
+        return context
+
+def createVmView(request):
+    if request.method == 'POST':
+        form = CreateVmForm(request.POST)
+        if form.is_valid():
+            vcenter = Vcenter.objects.get(pk=form.cleaned_data['vcenters'])
+            vm = Vm(vm_name=form.cleaned_data['vm_name'], vcenter=vcenter, vm_ip=form.cleaned_data['vm_ip'],
+                    vm_subnet=form.cleaned_data['vm_subnet'], vm_gateway=form.cleaned_data['vm_gateway'],
+                    vm_hostname=form.cleaned_data['vm_hostname'])
+            vm.save()
+            return HttpResponseRedirect('/vmware')
+    else:
+        form = CreateVmForm()
+    return render(request, 'vmware/createVmForm.html', {'form': form})
 
 
 def cloneView(request):
@@ -46,7 +64,7 @@ def vcenterTemplateList(request):
 def vcenterVmList(request):
     vcenter = Vcenter.objects.get(pk=request.GET['vc_id'])
     vm_list = vmvc.get_vms(vcenter)
-    return render(request, 'vmware/vmList.html', {"vms": vm_list})
+    return render(request, 'vmware/vmList.html', {"object_list": vm_list})
 
 
 def pushFile(request):
@@ -75,4 +93,12 @@ def cloneVm(request):
     vc.disconnect()
     return HttpResponse("<p>Done!<p>")
 
-#
+
+def getTemplateJs(request):
+    if request.method == 'GET':
+        templates = []
+        vcenter = Vcenter.objects.get(pk=request.GET['vcenter_id'])
+        template_list = vmvc.get_templates(vcenter)
+        for template in template_list:
+            templates.append('<option>' + template + '</option>')
+        return HttpResponse(templates)
