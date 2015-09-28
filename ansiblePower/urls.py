@@ -19,6 +19,10 @@ from django.conf.urls.static import static
 from django.contrib import admin
 
 urlpatterns = [
+    url(r'^$', include('dashboard.urls', namespace="dashboard")),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^vmware/', include('vmware.urls', namespace="vmware")),
+    url(r'^projects/', include('projects.urls', namespace="projects")),
+    url(r'^inventories/', include('inventories.urls', namespace="inventories")),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+

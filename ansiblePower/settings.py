@@ -38,6 +38,9 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'vmware',
+    'projects',
+    'dashboard',
+    'inventories',
 )
 
 MIDDLEWARE_CLASSES = (

@@ -1,0 +1,11 @@
+{% extends "projects/base.html" %}
+
+{% block jumbotron %}
+    <div>
+        <form action="" method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Create</button>
+        </form>
+    </div>
+{% endblock jumbotron %}

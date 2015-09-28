@@ -1,0 +1,43 @@
+{% extends "projects/base.html" %}
+{% block jumbotron %}
+    {#    <div class="jumbotron">#}
+    {#        <p>Hello World</p>#}
+    {#    </div>#}
+    <div>
+        <div class="col-md1 col-md-offset-11" align="right">
+            <a href={% url 'projects:createProject' %} type="button" class="btn btn-info">
+                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Add
+            </a>
+        </div>
+        <div>
+            <div class="bs-example" data-example-id="hoverable-table">
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Name</th>
+                        <th>Directory</th>
+                        <th>Modified</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for project in object_list %}
+                        <tr>
+                            <th scope="row">{{ forloop.counter }}</th>
+                            <td>{{ project.name }}</td>
+                            <td>{{ project.directory }}</td>
+                            <td>{{ project.date_modified }}</td>
+                        <td>
+                            <a href={% url 'projects:dropProject' %} type="button" class="btn btn-default btn-xs">
+                                <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                            </a>
+                        </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock jumbotron %}
