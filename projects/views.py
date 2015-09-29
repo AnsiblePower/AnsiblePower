@@ -1,6 +1,4 @@
-from django.shortcuts import render
 from django.views import generic
-from django.http import HttpResponseRedirect
 from .models import Projects
 from .forms import CreateProjectForm
 # Create your views here.
@@ -11,22 +9,26 @@ class ProjectIndex(generic.ListView):
     template_name = 'projects/projectsIndex.html'
 
 
-def createProjectForm(request):
-    if request.method == 'POST':
-        form = CreateProjectForm(request.POST)
-        if form.is_valid():
-            proj = Projects(name=form.cleaned_data['name'], description=form.cleaned_data['description'],
-                            directory=form.cleaned_data['directory'])
-            proj.save()
-            return HttpResponseRedirect('/projects')
-    else:
-        form = CreateProjectForm()
-    return render(request, 'projects/createProject.html', {'form': form})
+class createProjectForm(generic.CreateView):
+    form_class = CreateProjectForm
+    template_name = 'projects/createProject.html'
+    success_url = '/projects'
 
 
-def dropProject(request):
-    #TODO: implement drop project object logic...
-    pass
+class editProject(generic.UpdateView):
+    form_class = CreateProjectForm
+    template_name = 'projects/editProject.html'
+    model = Projects
+    success_url = '/projects'
+
+
+class deleteProject(generic.DeleteView):
+    model = Projects
+    success_url = '/projects'
+    template_name = 'projects/deleteProject.html'
+
+
+
 
 
 
