@@ -1,11 +1,24 @@
 {% extends "projects/base.html" %}
+{% load bootstrap3 %}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+{% bootstrap_messages %}
 
 {% block jumbotron %}
-    <div>
-        <form action="" method="post">
+    <div class="col col-md-6">
+        {#        <form action="" method="post">#}
+        {#            {% csrf_token %}#}
+        {#            {{ form.as_p }}#}
+        {#            <button type="submit">Create</button>#}
+        {#        </form>#}
+        <form action="{% url 'projects:createProject' %}" method="post" class="form">
             {% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit">Create</button>
+            {% bootstrap_form form %}
+            {% buttons %}
+                <button type="submit" class="btn btn-primary">
+                    {% bootstrap_icon "ok" %} Create
+                </button>
+            {% endbuttons %}
         </form>
     </div>
 {% endblock jumbotron %}
