@@ -2,7 +2,7 @@
  * Created by dborysenko on 9/29/2015.
  */
 
-$("button[id^='deleteprojectbutton']").click(function () {
+$("button[id^='deletebutton']").click(function () {
     var modalwindow = $('#deleteconfirmmodal').modal('show');
     var pk = $(this).data('pk');
     var name = $(this).data('name');

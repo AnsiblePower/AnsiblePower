@@ -26,7 +26,7 @@
                             <td>{{ project.directory }}</td>
                             <td>{{ project.date_modified|date:"Y-m-d H:i:s" }}</td>
                             <td>
-                                <button id="deleteprojectbutton{{ project.pk }}" type="button"
+                                <button id="deletebutton{{ project.pk }}" type="button"
                                         class="btn btn-default btn-xs"
                                         data-target=".bs-example-modal-sm" data-pk="{{ project.pk }}"
                                         data-name="{{ project.name }}"
