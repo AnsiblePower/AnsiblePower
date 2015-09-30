@@ -21,13 +21,16 @@
                     <tbody>
                     {% for project in object_list %}
                         <tr id="row{{ project.pk }}" class="collapse in">
-                            <th scope="row">{{ forloop.counter }}</th>
+                            <th scope="row">{{ page_obj.start_index|add:forloop.counter|add:"-1" }}</th>
                             <td>{{ project.name }}</td>
                             <td>{{ project.directory }}</td>
                             <td>{{ project.date_modified|date:"Y-m-d H:i:s" }}</td>
                             <td>
-                                <button id="deleteprojectbutton{{ project.pk }}" type="button" class="btn btn-default btn-xs" {#  data-toggle="modal" #}
-                                        data-target=".bs-example-modal-sm" data-pk="{{ project.pk }}" data-name="{{ project.name }}">
+                                <button id="deleteprojectbutton{{ project.pk }}" type="button"
+                                        class="btn btn-default btn-xs"
+                                        data-target=".bs-example-modal-sm" data-pk="{{ project.pk }}"
+                                        data-name="{{ project.name }}"
+                                        data-posttarget="/projects/deleteproject/">
                                     <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
                                 </button>
                                 <a href="{% url 'projects:editProject' pk=project.pk %}" class="btn btn-default btn-xs">
@@ -41,23 +44,6 @@
             </div>
         </div>
     </div>
-    <div class="modal fade bs-example-modal-sm" id="deleteconfirmmodal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
-  <div class="modal-dialog modal-sm">
-    <div class="modal-content">
-      <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">x</span>
-          </button>
-          <h4 class="modal-title" id="mySmallModalLabel">Confirm dropping project</h4>
-      </div>
-        <div class="modal-body">
-
-        </div>
-        <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            <button class="btn btn-danger btn-ok">Drop</button>
-        </div>
-    </div>
-  </div>
-</div>
+    {% include 'projects/pagination.html' %}
+    {% include 'projects/modalConfirm.html' %}
 {% endblock jumbotron %}

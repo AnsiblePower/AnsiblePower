@@ -7,6 +7,7 @@ from .forms import CreateProjectForm
 class ProjectIndex(generic.ListView):
     model = Projects
     template_name = 'projects/projectsIndex.html'
+    paginate_by = 5
 
 
 class createProjectForm(generic.CreateView):
