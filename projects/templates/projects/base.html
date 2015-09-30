@@ -1,12 +1,4 @@
 {% extends "dashboard/base.html" %}
 {% load staticfiles %}
-{% block activetab %}
-    <li><a href={% url 'dashboard:index' %}>Home</a></li>
-    <li class="active"><a href={% url 'projects:index' %}>Projects</a></li>
-    <li><a href={% url 'inventories:index' %}>Inventories</a></li>
-    <li><a href="#">Contact</a></li>
-{% endblock activetab %}
-{% block jsload %}
-        {{ block.super }}
-    <script src="{% static 'js/projects.js' %}"></script>
-{% endblock jsload %}
+
+

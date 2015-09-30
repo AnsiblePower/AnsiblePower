@@ -42,6 +42,7 @@ INSTALLED_APPS = (
     'projects',
     'dashboard',
     'inventories',
+    'jobtemplates',
 )
 
 MIDDLEWARE_CLASSES = (

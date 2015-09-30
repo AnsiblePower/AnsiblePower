@@ -41,9 +41,10 @@
                 <div id="navbar" class="navbar-collapse collapse">
                     <ul class="nav navbar-nav" id="navbarid">
                         {% block activetab %}
-                            <li id="Home" class="active"><a href={% url 'dashboard:index' %}>Home</a></li>
+                            <li id="Home"><a href={% url 'dashboard:index' %}>Home</a></li>
                             <li id="Projects"><a href={% url 'projects:index' %}>Projects</a></li>
                             <li id="Inventories"><a href={% url 'inventories:index' %}>Inventories</a></li>
+                            <li id="JobTemplates"><a href="{% url 'jobtemplates:index' %}">JobTemplates</a></li>
                             <li id="Contact"><a href="#">Contact</a></li>
                         {% endblock activetab %}
                         <li class="dropdown">
@@ -62,7 +63,7 @@
                         </li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
-                        <li class="active"><a href="./">Default <span class="sr-only">(current)</span></a></li>
+                        <li><a href="./">Default <span class="sr-only">(current)</span></a></li>
                         <li><a href="../navbar-static-top/">Static top</a></li>
                         <li><a href="../navbar-fixed-top/">Fixed top</a></li>
                     </ul>
@@ -94,8 +95,10 @@
 <!-- /container -->
 
 {% block jsload %}
-<script src="{% static 'js/jquery-1.11.3.min.js' %}"></script>
-<script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/jquery-1.11.3.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/projects.js' %}"></script>
+    <script src="{% static 'js/ansibleTower.js' %}"></script>
 {% endblock jsload %}
 </body>
 </html>

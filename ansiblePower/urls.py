@@ -23,6 +23,7 @@ urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(r'^vmware/', include('vmware.urls', namespace="vmware")),
     url(r'^projects/', include('projects.urls', namespace="projects")),
+    url(r'^jobtemplates/', include('jobtemplates.urls', namespace="jobtemplates")),
     url(r'^inventories/', include('inventories.urls', namespace="inventories")),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
