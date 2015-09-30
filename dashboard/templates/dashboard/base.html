@@ -41,11 +41,11 @@
                 <div id="navbar" class="navbar-collapse collapse">
                     <ul class="nav navbar-nav" id="navbarid">
                         {% block activetab %}
-                            <li id="Home"><a href={% url 'dashboard:index' %}>Home</a></li>
-                            <li id="Projects"><a href={% url 'projects:index' %}>Projects</a></li>
-                            <li id="Inventories"><a href={% url 'inventories:index' %}>Inventories</a></li>
-                            <li id="JobTemplates"><a href="{% url 'jobtemplates:index' %}">JobTemplates</a></li>
-                            <li id="Contact"><a href="#">Contact</a></li>
+                            <li id="home"><a href={% url 'dashboard:index' %}>Home</a></li>
+                            <li id="projects"><a href={% url 'projects:index' %}>Projects</a></li>
+                            <li id="inventories"><a href={% url 'inventories:index' %}>Inventories</a></li>
+                            <li id="jobtemplates"><a href="{% url 'jobtemplates:index' %}">JobTemplates</a></li>
+                            <li id="contact"><a href="#">Contact</a></li>
                         {% endblock activetab %}
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
