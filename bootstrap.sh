@@ -8,6 +8,7 @@ apt-get install -y python-dev
 apt-get install -y ansible
 apt-get install -y python-setuptools
 apt-get install -y python-virtualenv
+apt-get install -y mc
 easy_install pip
 
 if [ ! -d ~vagrant/venv ]; then

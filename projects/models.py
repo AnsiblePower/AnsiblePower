@@ -1,5 +1,6 @@
 from django.db import models
 from django.core.exceptions import ValidationError
+from django.db.models import ProtectedError
 import os
 
 
@@ -9,6 +10,15 @@ class Projects(models.Model):
     name = models.CharField(max_length=255)
     description = models.CharField(max_length=255)
     directory = models.CharField(max_length=255)
+
+    def __unicode__(self):
+        return self.name
+
+    # def delete(self, using=None):
+    #     try:
+    #         self.delete(using=None)
+    #     except ProtectedError, e:
+    #         raise Exception('Hello World from models')
 
 
 def validateFolder(value):

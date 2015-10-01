@@ -13,6 +13,9 @@
                 <button type="submit" class="btn btn-primary">
                     {% bootstrap_icon "ok" %} Save
                 </button>
+                <a href="{% url 'projects:index' %}" type="button" class="btn btn-default">
+                    {% bootstrap_icon "remove" %} Cancel
+                </a>
             {% endbuttons %}
         </form>
     </div>

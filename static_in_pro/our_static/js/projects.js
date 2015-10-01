@@ -7,15 +7,22 @@ $("button[id^='deletebutton']").click(function () {
     var pk = $(this).data('pk');
     var name = $(this).data('name');
     var postTarget = $(this).data('posttarget');
-    modalwindow.find('.modal-body').append(name);
+    modalwindow.find('.modal-body').html(name);
     var okbtn = modalwindow.find('.btn-ok');
     okbtn.click(function(){
         confirmDelete(pk, postTarget);
-        $('#row'.concat(pk)).collapse('hide');
-        $('#deleteconfirmmodal').modal('hide')
     })
 });
 
+function handleError(textStatus) {
+    console.log(textStatus)
+    $('#deleteconfirmmodal').modal('hide')
+}
+
+function handleSuccess(successObj){
+    $('#row'.concat(pk)).collapse('hide');
+    $('#deleteconfirmmodal').modal('hide')
+}
 
 function confirmDelete(pk, postTarget) {
     $.ajax({
@@ -24,7 +31,10 @@ function confirmDelete(pk, postTarget) {
         dataType: "json",
         data: {"item": $(".todo-item").val()},
         success: function (data) {
-            alert(data.message);
+            handleSuccess(data)
+        },
+        error: function (textStatus) {
+            handleError(textStatus)
         }
     });
 }

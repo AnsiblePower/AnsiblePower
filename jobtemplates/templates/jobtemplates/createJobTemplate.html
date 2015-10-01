@@ -1,22 +1,33 @@
 {% extends "jobtemplates/base.html" %}
+{% load staticfiles %}
 {% load bootstrap3 %}
 {% bootstrap_css %}
 {% bootstrap_javascript %}
 {% bootstrap_messages %}
 
 {% block jumbotron %}
-    <div class="col col-md-6">
+    <div class="row">
         <form action="{% url 'jobtemplates:createJobTemplate' %}" method="post" class="form">
-            {% csrf_token %}
-            {% bootstrap_form form %}
-            {% buttons %}
-                <button type="submit" class="btn btn-primary">
-                    {% bootstrap_icon "ok" %} Create
-                </button>
-                <a href="{% url 'projects:index' %}" type="button" class="btn btn-default">
-                    {% bootstrap_icon "remove" %} Cancel
-                </a>
-            {% endbuttons %}
+            <div class="col col-md-6">
+                {% csrf_token %}
+                {% bootstrap_field form.name %}
+                {% bootstrap_field form.description %}
+                {% bootstrap_field form.run_types %}
+                {% bootstrap_field form.project %}
+                {% bootstrap_field form.playbook %}
+                {% buttons %}
+                    <button type="submit" class="btn btn-primary">
+                        {% bootstrap_icon "ok" %} Create
+                    </button>
+                    <a href="{% url 'projects:index' %}" type="button" class="btn btn-default">
+                        {% bootstrap_icon "remove" %} Cancel
+                    </a>
+                {% endbuttons %}
+            </div>
+            <div class="col col-md-6">
+                {% bootstrap_field form.extra_variables %}
+            </div>
         </form>
+
     </div>
 {% endblock jumbotron %}

@@ -4,5 +4,7 @@ from django.conf.urls import url
 
 urlpatterns = [
     url(r'^$', views.JobTemplatesIndex.as_view(), name='index'),
-    url(r'^createjobtemplate', views.createJobTemplateForm.as_view(), name='createJobTemplate'),
+    url(r'^createjobtemplate', views.createJobTemplate.as_view(), name='createJobTemplate'),
+    url(r'^editjobtemplate/(?P<pk>\d+)', views.editJobTemplate.as_view(), name='editJobTemplate'),
+    url(r'^deletejobtemplate/(?P<pk>\d+)', views.deleteJobTemplate.as_view(), name='deleteJobTemplate'),
 ]
