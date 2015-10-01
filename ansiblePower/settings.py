@@ -117,4 +117,3 @@ TEMPLATE_DIRS = (
     os.path.join(BASE_DIR,  'templates'),
 )
 
-CODEMIRROR_PATH = os.path.join(BASE_DIR, "static_in_pro", "our_static", "codemirror")
