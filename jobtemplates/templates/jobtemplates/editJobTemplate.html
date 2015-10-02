@@ -6,7 +6,7 @@
 {% bootstrap_messages %}
 
 {% block jumbotron %}
-        <div class="row">
+    <div class="row">
         <form action="{% url 'jobtemplates:editJobTemplate' pk=object.pk %}" method="post" class="form">
             <div class="col col-md-6">
                 {% csrf_token %}
@@ -26,24 +26,10 @@
             </div>
             <div class="col col-md-6">
                 {% bootstrap_field form.extra_variables %}
-
             </div>
         </form>
     </div>
-        <link rel="stylesheet" href="{% static 'codemirror/lib/codemirror.css' %}">
-    <link rel="stylesheet" href="{% static 'codemirror/theme/dracula.css' %}">
-    <script src="{% static 'codemirror/lib/codemirror.js' %}"></script>
-    <script src="{% static 'codemirror/mode/yaml/yaml.js' %}"></script>
- <script>
-
-    var editor = CodeMirror.fromTextArea(document.getElementById("id_extra_variables"), {
-      lineNumbers: true,
-      mode: "yaml",
-        theme: "dracula",
-      matchBrackets: true
-    });
-
-    </script>
+    {% include 'jobtemplates/codemirror.html' %}
 {% endblock jumbotron %}
 {% block jsload %}
     {{ block.super }}

@@ -29,6 +29,7 @@ class VmDetail(generic.DetailView):
         context['repoList'] = github.getRepos()
         return context
 
+
 def createVmView(request):
     if request.method == 'POST':
         form = CreateVmForm(request.POST)

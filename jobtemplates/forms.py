@@ -1,16 +1,13 @@
 from django import forms
-from .models import JobTemplates, validateFolder
+from .models import JobTemplates, validateFolder, validateYAML
 from projects.models import Projects
-from widgets import codemirror_widget
-
-
 
 
 class CreateJobTemplateForm(forms.ModelForm):
     name = forms.CharField(max_length=255)
     description = forms.CharField(max_length=255, required=False)
     project = forms.ModelChoiceField(queryset=Projects.objects.all(), validators=[validateFolder])
-    extra_variables = forms.Textarea()
+    extra_variables = forms.CharField(widget=forms.Textarea, validators=[validateYAML])
 
     class Meta:
         model = JobTemplates

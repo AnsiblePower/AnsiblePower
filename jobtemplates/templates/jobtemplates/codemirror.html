@@ -1,0 +1,14 @@
+{% load staticfiles %}
+<link rel="stylesheet" href="{% static 'codemirror/lib/codemirror.css' %}">
+<link rel="stylesheet" href="{% static 'codemirror/theme/eclipse.css' %}">
+<script src="{% static 'codemirror/lib/codemirror.js' %}"></script>
+<script src="{% static 'codemirror/mode/yaml/yaml.js' %}"></script>
+<script>
+    var editor = CodeMirror.fromTextArea(document.getElementById("id_extra_variables"), {
+        lineNumbers: true,
+        mode: "yaml",
+        theme: "eclipse",
+        matchBrackets: true
+    });
+{#    editor.getDoc().;#}
+</script>
