@@ -18,7 +18,13 @@ $("#id_project").change(function(){
     var projID = $('#id_project option:selected').attr('value');
     console.log(projID);
     $.get("/jobtemplates/getjsondirectory/".concat(projID), function(data){
-        console.log(data.directory)
+        //console.log(data.directory)
+        $.each(data, function(k, v){
+            //console.log(v)
+            $('#id_playbook').append($("<option></option")
+                .attr("value", v)
+                .text(v));
+        })
     })
 });
 

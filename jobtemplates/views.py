@@ -1,8 +1,10 @@
+import os
+import yaml
 from django.views import generic
 from django.http import HttpResponseRedirect, JsonResponse
 from .models import JobTemplates, Projects
 from .forms import CreateJobTemplateForm
-import yaml
+
 
 
 class JobTemplatesIndex(generic.ListView):
@@ -42,4 +44,10 @@ def runTest(request, **kwargs):
 def getJSONDirectory(request, **kwargs):
     if request.method == 'GET':
         proj = Projects.objects.get(pk=kwargs['pk'])
-        return JsonResponse({'directory': proj.directory})
+        result = {}
+        i = 0
+        for file in os.listdir(proj.directory):
+            if file[-3:] == 'yml':
+                i += 1
+                result[i] = file
+        return JsonResponse(result)
