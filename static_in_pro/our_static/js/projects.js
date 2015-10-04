@@ -2,6 +2,10 @@
  * Created by dborysenko on 9/29/2015.
  */
 
+$(document).ready(function () {
+    setPlaybookID()
+});
+
 $("button[id^='deletebutton']").click(function () {
     var modalwindow = $('#deleteconfirmmodal').modal('show');
     var pk = $(this).data('pk');
@@ -9,31 +13,42 @@ $("button[id^='deletebutton']").click(function () {
     var postTarget = $(this).data('posttarget');
     modalwindow.find('.modal-body').html(name);
     var okbtn = modalwindow.find('.btn-ok');
-    okbtn.click(function(){
+    okbtn.click(function () {
         confirmDelete(pk, postTarget);
     })
 });
 
-$("#id_project").change(function(){
-    var projID = $('#id_project option:selected').attr('value');
-    console.log(projID);
-    $.get("/jobtemplates/getjsondirectory/".concat(projID), function(data){
-        //console.log(data.directory)
-        $.each(data, function(k, v){
-            //console.log(v)
-            $('#id_playbook').append($("<option></option")
-                .attr("value", v)
-                .text(v));
-        })
-    })
+$("#id_project").change(function () {
+    setPlaybookID()
 });
+
+function setPlaybookID() {
+    var projID = $('#id_project option:selected').attr('value');
+    if (projID != undefined) {
+        $('#id_playbook option').each(function () {
+                    $(this).remove()
+                });
+        if (projID == '---------') {
+
+        } else {
+            console.log(projID);
+            $.get("/jobtemplates/getjsondirectory/".concat(projID), function (data) {
+                $.each(data, function (k, v) {
+                    $('#id_playbook').append($("<option></option")
+                        .attr("value", v)
+                        .text(v));
+                })
+            })
+        }
+    }
+}
 
 function handleError(textStatus) {
     console.log(textStatus)
     $('#deleteconfirmmodal').modal('hide')
 }
 
-function handleSuccess(successObj){
+function handleSuccess(successObj) {
     $('#row'.concat(pk)).collapse('hide');
     $('#deleteconfirmmodal').modal('hide')
 }

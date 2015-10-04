@@ -46,8 +46,8 @@ def getJSONDirectory(request, **kwargs):
         proj = Projects.objects.get(pk=kwargs['pk'])
         result = {}
         i = 0
-        for file in os.listdir(proj.directory):
-            if file[-3:] == 'yml':
+        for filename in os.listdir(proj.directory):
+            if filename[-3:] == 'yml':
                 i += 1
-                result[i] = file
+                result[i] = filename
         return JsonResponse(result)

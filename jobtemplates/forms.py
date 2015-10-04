@@ -1,5 +1,5 @@
 from django import forms
-from .models import JobTemplates, validateFolder, validateYAML
+from .models import JobTemplates, validateFolder, validateYAML, playbookchoices
 from projects.models import Projects
 
 
@@ -8,9 +8,13 @@ class CreateJobTemplateForm(forms.ModelForm):
     description = forms.CharField(max_length=255, required=False)
     project = forms.ModelChoiceField(queryset=Projects.objects.all(), validators=[validateFolder])
     extra_variables = forms.CharField(widget=forms.Textarea, validators=[validateYAML])
-    playbook = forms.ChoiceField()
+    playbook = forms.ChoiceField(choices=playbookchoices())
 
     class Meta:
         model = JobTemplates
         exclude = ['date_created', 'date_modified', ]
+
+
+
+
 
