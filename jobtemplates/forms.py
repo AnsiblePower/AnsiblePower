@@ -10,6 +10,10 @@ class CreateJobTemplateForm(forms.ModelForm):
     extra_variables = forms.CharField(widget=forms.Textarea, validators=[validateYAML], required=False)
     playbook = forms.CharField(widget=forms.Select)
 
+    class Meta:
+        model = JobTemplates
+        exclude = ['date_created', 'date_modified', ]
+
     def __init__(self, *args, **kwargs):
         super(CreateJobTemplateForm, self).__init__(*args, **kwargs)
         # Check if form is using for update view and prefill fields:
@@ -29,9 +33,7 @@ class CreateJobTemplateForm(forms.ModelForm):
             self.initial['extra_variables'] = '---'
 
 
-    class Meta:
-        model = JobTemplates
-        exclude = ['date_created', 'date_modified', ]
+
 
 
 

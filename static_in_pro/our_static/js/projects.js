@@ -48,7 +48,7 @@ function handleError(textStatus) {
     $('#deleteconfirmmodal').modal('hide')
 }
 
-function handleSuccess(successObj) {
+function handleSuccess(successObj, pk) {
     $('#row'.concat(pk)).collapse('hide');
     $('#deleteconfirmmodal').modal('hide')
 }
@@ -60,10 +60,10 @@ function confirmDelete(pk, postTarget) {
         dataType: "json",
         data: {"item": $(".todo-item").val()},
         success: function (data) {
-            handleSuccess(data)
+            handleSuccess(data, pk)
         },
         error: function (textStatus) {
-            handleError(textStatus)
+            handleError(textStatus);
         }
     });
 }

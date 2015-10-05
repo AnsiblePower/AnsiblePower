@@ -4,8 +4,6 @@ from django.views import generic
 from django.http import HttpResponseRedirect, JsonResponse
 from .models import JobTemplates, Projects
 from .forms import CreateJobTemplateForm
-from django.core.exceptions import ValidationError
-
 
 
 class JobTemplatesIndex(generic.ListView):
@@ -31,6 +29,10 @@ class deleteJobTemplate(generic.DeleteView):
     model = JobTemplates
     template_name = 'jobtemplates/deleteJobTemplate.html'
     success_url = '/jobtemplates'
+
+    def post(self, request, *args, **kwargs):
+        self.delete(request, *args, **kwargs)
+        return JsonResponse({})
 
 
 def runTest(request, **kwargs):

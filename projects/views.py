@@ -1,6 +1,5 @@
 from django.views import generic
-from django.http import HttpResponseServerError
-from django.db import IntegrityError
+from django.http import JsonResponse
 from .models import Projects
 from .forms import CreateProjectForm
 
@@ -31,17 +30,6 @@ class deleteProject(generic.DeleteView):
     success_url = '/projects'
     template_name = 'projects/deleteProject.html'
 
-    # def delete(self, request, *args, **kwargs):
-    #     print "trying in views"
-    #     self.object = self.get_object()
-    #     success_url = self.get_success_url()
-    #     try:
-    #         self.object.delete()
-    #     except IntegrityError, e:
-    #         return HttpResponseServerError('Hello World')
-
-
-
-
-
-
+    def post(self, request, *args, **kwargs):
+        self.delete(request, *args, **kwargs)
+        return JsonResponse({})

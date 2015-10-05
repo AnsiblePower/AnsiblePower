@@ -43,20 +43,20 @@ def validateYAML(yamlText):
         raise ValidationError('YAML syntax error: %s' % str(e))
 
 
-def playbookchoices():
-    projects = Projects.objects.all()
-    result = []
-    i = 0
-    for proj in projects:
-        try:
-            directory = proj.directory
-            files = os.listdir(directory)
-            for filename in files:
-                if filename[-3:] == 'yml':
-                    result.append((filename, filename))
-        except OSError, e:
-            pass
-    return result
+# def playbookchoices():
+#     projects = Projects.objects.all()
+#     result = []
+#     i = 0
+#     for proj in projects:
+#         try:
+#             directory = proj.directory
+#             files = os.listdir(directory)
+#             for filename in files:
+#                 if filename[-3:] == 'yml':
+#                     result.append((filename, filename))
+#         except OSError, e:
+#             pass
+#     return result
 
 
 def playbookchoices(directory):
