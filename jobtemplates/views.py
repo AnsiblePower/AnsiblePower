@@ -4,6 +4,7 @@ from django.views import generic
 from django.http import HttpResponseRedirect, JsonResponse
 from .models import JobTemplates, Projects
 from .forms import CreateJobTemplateForm
+from django.core.exceptions import ValidationError
 
 
 
@@ -46,8 +47,11 @@ def getJSONDirectory(request, **kwargs):
         proj = Projects.objects.get(pk=kwargs['pk'])
         result = {}
         i = 0
-        for filename in os.listdir(proj.directory):
-            if filename[-3:] == 'yml':
-                i += 1
-                result[i] = filename
+        try:
+            for filename in os.listdir(proj.directory):
+                if filename[-3:] == 'yml':
+                    i += 1
+                    result[i] = filename
+        except OSError, e:
+            print str(e)
         return JsonResponse(result)

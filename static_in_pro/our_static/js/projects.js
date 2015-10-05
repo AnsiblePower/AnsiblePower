@@ -2,9 +2,9 @@
  * Created by dborysenko on 9/29/2015.
  */
 
-$(document).ready(function () {
-    setPlaybookID()
-});
+//$(document).ready(function () {
+//    setPlaybookID()
+//});
 
 $("button[id^='deletebutton']").click(function () {
     var modalwindow = $('#deleteconfirmmodal').modal('show');
@@ -28,7 +28,7 @@ function setPlaybookID() {
         $('#id_playbook option').each(function () {
                     $(this).remove()
                 });
-        if (projID == '---------') {
+        if (projID == '') {
 
         } else {
             console.log(projID);

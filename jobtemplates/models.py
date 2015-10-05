@@ -30,7 +30,7 @@ class JobTemplates(models.Model):
 def validateFolder(value):
     proj = Projects.objects.get(pk=value.pk)
     if os.path.isdir(proj.directory) and os.access(proj.directory, os.W_OK):
-        pass
+        return True
     else:
         raise ValidationError('%s project\'s directory %s not accessible' % (value, proj.directory))
 
@@ -38,6 +38,7 @@ def validateFolder(value):
 def validateYAML(yamlText):
     try:
         yaml.load(yamlText)
+        return True
     except MarkedYAMLError, e:
         raise ValidationError('YAML syntax error: %s' % str(e))
 
@@ -47,9 +48,24 @@ def playbookchoices():
     result = []
     i = 0
     for proj in projects:
-        directory = proj.directory
+        try:
+            directory = proj.directory
+            files = os.listdir(directory)
+            for filename in files:
+                if filename[-3:] == 'yml':
+                    result.append((filename, filename))
+        except OSError, e:
+            pass
+    return result
+
+
+def playbookchoices(directory):
+    result = [('', '-----'), ]
+    try:
         files = os.listdir(directory)
         for filename in files:
             if filename[-3:] == 'yml':
                 result.append((filename, filename))
+    except OSError, e:
+        pass
     return result

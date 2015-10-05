@@ -19,7 +19,7 @@
                     <button type="submit" class="btn btn-primary">
                         {% bootstrap_icon "ok" %} Create
                     </button>
-                    <a href="{% url 'projects:index' %}" type="button" class="btn btn-default">
+                    <a href="{% url 'jobtemplates:index' %}" type="button" class="btn btn-default">
                         {% bootstrap_icon "remove" %} Cancel
                     </a>
                 {% endbuttons %}
@@ -28,6 +28,6 @@
                 {% bootstrap_field form.extra_variables %}
             </div>
         </form>
-
     </div>
+    {% include 'jobtemplates/codemirror.html' %}
 {% endblock jumbotron %}
