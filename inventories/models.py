@@ -20,3 +20,14 @@ def validateYAML(yamlText):
         return True
     except MarkedYAMLError, e:
         raise ValidationError('YAML syntax error: %s' % str(e))
+
+
+class Hosts(models.Model):
+    date_created = models.DateTimeField(auto_now_add=True)
+    date_modified = models.DateTimeField(auto_now=True)
+    # TODO: need to implement hostname or ipaddress field (custom validator)
+    name = models.GenericIPAddressField(protocol='IPv4')
+    inventory = models.ManyToManyField(Inventories)
+
+    def __unicode__(self):
+        return self.name

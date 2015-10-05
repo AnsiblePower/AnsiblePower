@@ -24,6 +24,11 @@ class editInventory(generic.UpdateView):
     success_url = '/inventories'
 
 
+class manageInventory(generic.DetailView):
+    model = Inventories
+    template_name = 'inventories/manageInventory.html'
+
+
 class deleteInventory(generic.DeleteView):
     model = Inventories
     template_name = 'inventories/deleteInventory.html'

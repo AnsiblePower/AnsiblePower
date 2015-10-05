@@ -6,4 +6,5 @@ urlpatterns = [
     url(r'^createinventory', views.createInventory.as_view(), name='createInventory'),
     url(r'^editinventory/(?P<pk>\d+)', views.editInventory.as_view(), name='editInventory'),
     url(r'^deleteinventory/(?P<pk>\d+)', views.deleteInventory.as_view(), name='deleteInventory'),
+    url(r'^manageinventory/(?P<pk>\d+)', views.manageInventory.as_view(), name='manageInventory'),
 ]

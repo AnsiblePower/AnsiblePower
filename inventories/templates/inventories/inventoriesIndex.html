@@ -21,7 +21,7 @@
                     {% for object in object_list %}
                         <tr id="row{{ object.pk }}" class="collapse in">
                             <th scope="row">{{ page_obj.start_index|add:forloop.counter|add:"-1" }}</th>
-                            <td><a href="{% url 'inventories:editInventory' object.pk %}">{{ object.name }}</a></td>
+                            <td><a href="{% url 'inventories:manageInventory' object.pk %}">{{ object.name }}</a></td>
                             <td>{{ object.date_modified|date:"Y-m-d H:i:s" }}</td>
                             <td>
                                 <button id="deletebutton{{ object.pk }}" type="button"
