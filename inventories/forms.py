@@ -1,5 +1,5 @@
 from django import forms
-from .models import Inventories, validateYAML
+from .models import Inventories, Hosts, validateYAML
 
 
 class CreateInventoryForm(forms.ModelForm):
@@ -20,4 +20,16 @@ class CreateInventoryForm(forms.ModelForm):
         else:
             self.initial['variables'] = '---'
 
+
+class CreateHostForm(forms.ModelForm):
+    name = forms.CharField(max_length=255)
+    inventory = forms.ModelChoiceField(queryset=Inventories.objects.all(), widget=forms.HiddenInput)
+
+    class Meta:
+        model = Hosts
+        exclude = ['date_created', 'date_modified', ]
+
+    def __init__(self, inv_pk, *args, **kwargs):
+        super(CreateHostForm, self).__init__(*args, **kwargs)
+        self.fields['inventory'].initial = inv_pk
 

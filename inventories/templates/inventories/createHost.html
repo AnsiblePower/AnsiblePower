@@ -1,0 +1,28 @@
+{% extends "inventories/base.html" %}
+{% load staticfiles %}
+{% load bootstrap3 %}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+{% bootstrap_messages %}
+
+{% block jumbotron %}
+    {{ inv_pk }}
+    <div class="row">
+        <form action="{% url 'inventories:createHost' inv_pk %}" method="post" class="form">
+            <div class="col col-md-12">
+                {% csrf_token %}
+                {% bootstrap_field form.name %}
+                {% bootstrap_field form.inventory %}
+                {% buttons %}
+                    <button type="submit" class="btn btn-primary">
+                        {% bootstrap_icon "ok" %} Create
+                    </button>
+                    <a href="{% url 'inventories:index' %}" type="button" class="btn btn-default">
+                        {% bootstrap_icon "remove" %} Cancel
+                    </a>
+                {% endbuttons %}
+            </div>
+        </form>
+    </div>
+    {% include 'inventories/codemirror.html' %}
+{% endblock jumbotron %}

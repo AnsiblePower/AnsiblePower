@@ -27,7 +27,7 @@ class Hosts(models.Model):
     date_modified = models.DateTimeField(auto_now=True)
     # TODO: need to implement hostname or ipaddress field (custom validator)
     name = models.GenericIPAddressField(protocol='IPv4')
-    inventory = models.ManyToManyField(Inventories)
+    inventory = models.ForeignKey(Inventories)
 
     def __unicode__(self):
         return self.name

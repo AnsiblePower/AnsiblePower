@@ -1,8 +1,9 @@
 from django.shortcuts import render
 from django.views import generic
 from django.http import JsonResponse
-from .models import Inventories
-from .forms import CreateInventoryForm
+from django.core.urlresolvers import reverse
+from .models import Inventories, Hosts
+from .forms import CreateInventoryForm, CreateHostForm
 
 
 class InventoriesIndex(generic.ListView):
@@ -29,6 +30,26 @@ class manageInventory(generic.DetailView):
     template_name = 'inventories/manageInventory.html'
 
 
+class createHost(generic.CreateView):
+    form_class = CreateHostForm
+    model = Hosts
+    template_name = 'inventories/createHost.html'
+    # TODO: need to work with success url
+
+    def get_context_data(self, **kwargs):
+        context = super(createHost, self).get_context_data(**kwargs)
+        context['inv_pk'] = self.kwargs['pk']
+        return context
+
+    def get_success_url(self):
+        return reverse('inventories:manageInventory', kwargs={'pk': self.kwargs['pk']})
+
+    def get_form_kwargs(self):
+        kwargs = super(createHost, self).get_form_kwargs()
+        kwargs['inv_pk'] = self.kwargs['pk']
+        return kwargs
+
+
 class deleteInventory(generic.DeleteView):
     model = Inventories
     template_name = 'inventories/deleteInventory.html'
@@ -37,3 +58,4 @@ class deleteInventory(generic.DeleteView):
     def post(self, request, *args, **kwargs):
         self.delete(request, *args, **kwargs)
         return JsonResponse({})
+
