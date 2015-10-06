@@ -1,4 +1,5 @@
 from django import forms
+from django.core.validators import validate_ipv46_address
 from .models import Inventories, Hosts, validateYAML
 
 
@@ -21,8 +22,8 @@ class CreateInventoryForm(forms.ModelForm):
             self.initial['variables'] = '---'
 
 
-class CreateHostForm(forms.ModelForm):
-    name = forms.CharField(max_length=255)
+class CreateHostForm(CreateInventoryForm):
+    name = forms.CharField(max_length=255, validators=[validate_ipv46_address])
     inventory = forms.ModelChoiceField(queryset=Inventories.objects.all(), widget=forms.HiddenInput)
 
     class Meta:
