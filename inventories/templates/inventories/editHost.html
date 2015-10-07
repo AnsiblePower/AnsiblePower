@@ -1,0 +1,32 @@
+{% extends "inventories/base.html" %}
+{% load staticfiles %}
+{% load bootstrap3 %}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+{% bootstrap_messages %}
+
+{% block jumbotron %}
+    <div class="row">
+        <form action="{% url 'inventories:editHost' pk=object.pk %}" method="post" class="form">
+            <div class="col col-md-12">
+                {% csrf_token %}
+                {% bootstrap_field form.name %}
+                {% bootstrap_field form.description %}
+                {% bootstrap_field form.variables %}
+                {% bootstrap_field form.inventory %}
+                {% buttons %}
+                    <button type="submit" class="btn btn-primary">
+                        {% bootstrap_icon "ok" %} Save
+                    </button>
+                    <a href="{% url 'inventories:manageInventory' inv_pk %}" type="button" class="btn btn-default">
+                        {% bootstrap_icon "remove" %} Cancel
+                    </a>
+                {% endbuttons %}
+            </div>
+        </form>
+    </div>
+    {% include 'inventories/codemirror.html' %}
+{% endblock jumbotron %}
+{% block jsload %}
+    {{ block.super }}
+{% endblock jsload %}

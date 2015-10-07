@@ -8,4 +8,5 @@ urlpatterns = [
     url(r'^deleteinventory/(?P<pk>\d+)', views.deleteInventory.as_view(), name='deleteInventory'),
     url(r'^manageinventory/(?P<pk>\d+)', views.manageInventory.as_view(), name='manageInventory'),
     url(r'^createhost/(?P<pk>\d+)', views.createHost.as_view(), name='createHost'),
+    url(r'^edithost/(?P<pk>\d+)', views.editHost.as_view(), name='editHost'),
 ]
