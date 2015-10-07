@@ -6,12 +6,13 @@
 {% bootstrap_messages %}
 
 {% block jumbotron %}
-    {{ inv_pk }}
     <div class="row">
         <form action="{% url 'inventories:createHost' inv_pk %}" method="post" class="form">
             <div class="col col-md-12">
                 {% csrf_token %}
                 {% bootstrap_field form.name %}
+                {% bootstrap_field form.ipAddress %}
+                {% bootstrap_field form.port %}
                 {% bootstrap_field form.description %}
                 {% bootstrap_field form.inventory %}
                 {% bootstrap_field form.variables %}

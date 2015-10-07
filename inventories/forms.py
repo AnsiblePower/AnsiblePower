@@ -23,8 +23,11 @@ class CreateInventoryForm(forms.ModelForm):
 
 
 class CreateHostForm(CreateInventoryForm):
-    name = forms.CharField(max_length=255, validators=[validate_ipv46_address])
+    name = forms.CharField(max_length=255)
+    ipAddress = forms.GenericIPAddressField(required=False)
+    port = forms.IntegerField(max_value=65535, min_value=1, required=False)
     inventory = forms.ModelChoiceField(queryset=Inventories.objects.all(), widget=forms.HiddenInput)
+
 
     class Meta:
         model = Hosts
