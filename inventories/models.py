@@ -28,6 +28,8 @@ class Hosts(models.Model):
     name = models.CharField(max_length=255)
     ipAddress = models.GenericIPAddressField(null=True)
     port = models.PositiveIntegerField(null=True)
+    username = models.CharField(max_length=255)
+    password = models.CharField(max_length=255)
     description = models.CharField(max_length=255, null=True)
     variables = models.TextField(null=True, blank=True)
     inventory = models.ForeignKey(Inventories)

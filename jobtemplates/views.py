@@ -60,6 +60,8 @@ def runInv(request, **kwargs):
     hostname = hostobj.name
     port = hostobj.port
     ip = hostobj.ipAddress
+    username = hostobj.username
+    password = hostobj.password
 
     # Constants
     C.HOST_KEY_CHECKING = False
@@ -79,6 +81,8 @@ def runInv(request, **kwargs):
         host.set_variable('ansible_ssh_host', ip)
     elif port:
         host.set_variable('ansible_ssh_port', port)
+    host.set_variable('ansible_user', username)
+    host.set_variable('ansible_ssh_pass', password)
     group.add_host(host)
     inventory.add_group(group)
     # Playbook gathering
@@ -89,8 +93,8 @@ def runInv(request, **kwargs):
         playbook=playbookPath,
         host_list=None,
         inventory=inventory,     # Our hosts, the rendered inventory file
-        remote_user='root',
-        remote_pass='qwer1234',
+        #remote_user='root',
+        #remote_pass='qwer1234',
         callbacks=playbook_cb,
         runner_callbacks=runner_cb,
         stats=stats,
