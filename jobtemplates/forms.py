@@ -1,12 +1,14 @@
 from django import forms
 from .models import JobTemplates, validateFolder, validateYAML, playbookchoices
 from projects.models import Projects
+from inventories.models import Inventories
 
 
 class CreateJobTemplateForm(forms.ModelForm):
     name = forms.CharField(max_length=255)
     description = forms.CharField(max_length=255, required=False)
     project = forms.ModelChoiceField(queryset=Projects.objects.all(), validators=[validateFolder])
+    inventory = forms.ModelChoiceField(queryset=Inventories.objects.all())
     extra_variables = forms.CharField(widget=forms.Textarea, validators=[validateYAML], required=False)
     playbook = forms.CharField(widget=forms.Select)
 
