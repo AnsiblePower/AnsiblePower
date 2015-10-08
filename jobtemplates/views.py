@@ -10,6 +10,7 @@ from django.core.urlresolvers import reverse
 from .models import JobTemplates, Projects
 from .forms import CreateJobTemplateForm
 from inventories.models import Hosts
+from .custCallback import myCustCallback
 
 
 class JobTemplatesIndex(generic.ListView):
@@ -54,37 +55,53 @@ def runTest(request, **kwargs):
 
 
 def runInv(request, **kwargs):
-    template = JobTemplates.objects.get(pk=kwargs['pk'])
-    hostobj = Hosts.objects.get(inventory=template.inventory.pk)
-    inventoryName = template.inventory.name
-    hostname = hostobj.name
-    port = hostobj.port
-    ip = hostobj.ipAddress
-    username = hostobj.username
-    password = hostobj.password
-
     # Constants
     C.HOST_KEY_CHECKING = False
+
+    template = JobTemplates.objects.get(pk=kwargs['pk'])
+    hostobjects = Hosts.objects.filter(inventory=template.inventory.pk)
+    inventoryName = template.inventory.name
+    inventory = Inventory()
+
+    # TODO: need to implement groups functionality
+    #Groups
+    #group = Group(inventoryName)
+    group = Group('mygroup')
+
+    for hostobj in hostobjects:
+        # Host defining
+        hostname = hostobj.name
+        port = hostobj.port
+        ip = hostobj.ipAddress
+        username = hostobj.username
+        password = hostobj.password
+        host = Host(hostname)
+        if ip:
+            host.set_variable('ansible_ssh_host', ip)
+        elif port:
+            host.set_variable('ansible_ssh_port', port)
+        host.set_variable('ansible_ssh_user', username)
+        host.set_variable('ansible_ssh_pass', password)
+        # Hostvars
+        hostvars = yaml.load(hostobj.variables)
+        if hostvars:
+            host.vars.update(hostvars)
+        group.add_host(host)
+
+    inventory.add_group(group)
+
+
+
+    # ExtraVars
+    extraVars = yaml.load(template.extra_variables)
 
     # Callbacks
     utils.VERBOSITY = 3
     playbook_cb = callbacks.PlaybookCallbacks(verbose=utils.VERBOSITY)
     stats = callbacks.AggregateStats()
-    runner_cb = callbacks.PlaybookRunnerCallbacks(stats, verbose=utils.VERBOSITY)
+    #runner_cb = callbacks.PlaybookRunnerCallbacks(stats, verbose=utils.VERBOSITY)
+    runner_cb = myCustCallback(stats, template.pk, verbose=utils.VERBOSITY)
 
-    # Inventory gathering
-    inventory = Inventory()
-    host = Host(hostname)
-    # TODO: implement host group
-    group = Group('mygroup')
-    if ip:
-        host.set_variable('ansible_ssh_host', ip)
-    elif port:
-        host.set_variable('ansible_ssh_port', port)
-    host.set_variable('ansible_user', username)
-    host.set_variable('ansible_ssh_pass', password)
-    group.add_host(host)
-    inventory.add_group(group)
     # Playbook gathering
     playbookPath = os.path.join(template.project.directory, template.playbook)
 
@@ -98,7 +115,7 @@ def runInv(request, **kwargs):
         callbacks=playbook_cb,
         runner_callbacks=runner_cb,
         stats=stats,
-        #extra_vars=extraVars,
+        extra_vars=extraVars,
         #private_key_file='/path/to/key.pem'
     )
     pb.run()
