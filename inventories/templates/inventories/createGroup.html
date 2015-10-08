@@ -7,22 +7,17 @@
 
 {% block jumbotron %}
     <div class="row">
-        <form action="{% url 'inventories:createHost' inv_pk %}" method="post" class="form">
+        <form action="{% url 'inventories:createGroup' inv_pk %}" method="post" class="form">
             <div class="row">
             <div class="col col-md-6">
                 {% csrf_token %}
                 {% bootstrap_field form.name %}
-                {% bootstrap_field form.ipAddress %}
-                {% bootstrap_field form.port %}
                 {% bootstrap_field form.description %}
-                {% bootstrap_field form.username %}
-                {% bootstrap_field form.password %}
                 {% bootstrap_field form.inventory %}
                 {% buttons %}
                     <button type="submit" class="btn btn-primary">
                         {% bootstrap_icon "ok" %} Create
                     </button>
-{# TODO: need to implement Cancel button to point to the groupList page if host was creating in a group      #}
                     <a href="{% url 'inventories:index' %}" type="button" class="btn btn-default">
                         {% bootstrap_icon "remove" %} Cancel
                     </a>

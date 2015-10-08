@@ -1,9 +1,16 @@
 {% extends 'inventories/base.html' %}
 {% block jumbotron %}
-    <div class="col-md1 col-md-offset-11" align="right" xmlns="http://www.w3.org/1999/html">
-        <a href={% url 'inventories:createHost' object.pk %} type="button" class="btn btn-info">
-            <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Add
-        </a>
+    <div class="row">
+        <div class="col-md1" align="" xmlns="http://www.w3.org/1999/html">
+            <a href={% url 'inventories:createGroup' object.pk %} type="button" class="btn btn-info">
+                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Add
+            </a>
+        </div>
+        <div class="col-md1 col-md-offset-10" align="" xmlns="http://www.w3.org/1999/html">
+            <a href={% url 'inventories:createHost' object.pk %} type="button" class="btn btn-info">
+                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Add
+            </a>
+        </div>
     </div>
     <div class="row">
         <div class="col col-md-6">

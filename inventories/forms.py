@@ -1,6 +1,6 @@
 from django import forms
 from django.core.validators import validate_ipv46_address
-from .models import Inventories, Hosts, validateYAML
+from .models import Inventories, Hosts, Groups ,validateYAML
 
 
 class CreateInventoryForm(forms.ModelForm):
@@ -28,6 +28,7 @@ class CreateHostForm(CreateInventoryForm):
     port = forms.IntegerField(max_value=65535, min_value=1, required=False)
     username = forms.CharField(max_length=255)
     password = forms.CharField(max_length=255, widget=forms.PasswordInput)
+    group = forms.ModelChoiceField(queryset=Groups.objects.all(), widget=forms.HiddenInput, required=False)
     inventory = forms.ModelChoiceField(queryset=Inventories.objects.all(), widget=forms.HiddenInput)
 
 
@@ -39,3 +40,15 @@ class CreateHostForm(CreateInventoryForm):
         super(CreateHostForm, self).__init__(*args, **kwargs)
         self.fields['inventory'].initial = inv_pk
 
+
+class CreateGroupForm(CreateInventoryForm):
+    #name = forms.CharField(max_length=255)
+    inventory = forms.ModelChoiceField(queryset=Inventories.objects.all(), widget=forms.HiddenInput)
+
+    class Meta:
+        model = Groups
+        exclude = ['date_created', 'date_modified', ]
+
+    def __init__(self, inv_pk, *args, **kwargs):
+        super(CreateGroupForm, self).__init__(*args, **kwargs)
+        self.fields['inventory'].initial = inv_pk

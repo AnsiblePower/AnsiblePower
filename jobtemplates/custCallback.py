@@ -1,6 +1,7 @@
 import sys
-from ansible.callbacks import PlaybookRunnerCallbacks
-from ansible.callbacks import log_flock, log_unflock, logger, stringc
+#from ansible.callbacks import PlaybookRunnerCallbacks
+#from ansible.callbacks import log_flock, log_unflock, stringc, logger
+from ansible.callbacks import *
 from ansible import utils
 from ansible import constants
 from ansible.module_utils import basic

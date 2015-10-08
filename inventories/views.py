@@ -2,8 +2,8 @@ from django.shortcuts import render
 from django.views import generic
 from django.http import JsonResponse
 from django.core.urlresolvers import reverse
-from .models import Inventories, Hosts
-from .forms import CreateInventoryForm, CreateHostForm
+from .models import Inventories, Hosts, Groups
+from .forms import CreateInventoryForm, CreateHostForm, CreateGroupForm
 
 
 class InventoriesIndex(generic.ListView):
@@ -72,6 +72,12 @@ class createHost(generic.CreateView):
         kwargs = super(createHost, self).get_form_kwargs()
         kwargs['inv_pk'] = self.kwargs['pk']
         return kwargs
+
+
+class createGroup(createHost):
+    form_class = CreateGroupForm
+    model = Groups
+    template_name = 'inventories/createGroup.html'
 
 
 class deleteInventory(generic.DeleteView):
