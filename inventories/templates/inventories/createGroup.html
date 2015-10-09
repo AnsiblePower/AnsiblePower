@@ -18,7 +18,7 @@
                     <button type="submit" class="btn btn-primary">
                         {% bootstrap_icon "ok" %} Create
                     </button>
-                    <a href="{% url 'inventories:index' %}" type="button" class="btn btn-default">
+                    <a href="{% url 'inventories:manageInventory' inv_pk %}" type="button" class="btn btn-default">
                         {% bootstrap_icon "remove" %} Cancel
                     </a>
                 {% endbuttons %}

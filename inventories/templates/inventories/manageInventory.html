@@ -1,12 +1,12 @@
 {% extends 'inventories/base.html' %}
 {% block jumbotron %}
     <div class="row">
-        <div class="col-md1" align="" xmlns="http://www.w3.org/1999/html">
+        <div class="col col-md-1">
             <a href={% url 'inventories:createGroup' object.pk %} type="button" class="btn btn-info">
                 <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Add
             </a>
         </div>
-        <div class="col-md1 col-md-offset-10" align="" xmlns="http://www.w3.org/1999/html">
+        <div class="col col-md-1 col-md-offset-10">
             <a href={% url 'inventories:createHost' object.pk %} type="button" class="btn btn-info">
                 <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Add
             </a>
@@ -15,9 +15,13 @@
     <div class="row">
         <div class="col col-md-6">
             <h3>Groups</h3>
+            {% for group in group_list %}
+{#                <a href="{% url 'inventories:editHost' host.pk %}">{{ host }}</a>#}
+                <p>{{ group.name }}</p>
+            {% endfor %}
         </div>
         <div class="col col-md-6">
-            <h3>Hosts</h3>
+            <h3 align="right">Hosts</h3>
             {% for host in hosts_list %}
                 <a href="{% url 'inventories:editHost' host.pk %}">{{ host }}</a>
             {% endfor %}

@@ -35,8 +35,9 @@ class manageInventory(generic.DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(manageInventory, self).get_context_data(**kwargs)
-        context['hosts_list'] = Hosts.objects.all()
-        # TODO: implement hostgroup queryset (http://stackoverflow.com/a/12357483)
+        inv_pk = context['object'].pk
+        context['hosts_list'] = Hosts.objects.filter(inventory=inv_pk)
+        context['group_list'] = Groups.objects.filter(inventory=inv_pk)
         return context
 
 
@@ -115,10 +116,23 @@ class createHost(generic.CreateView):
 
         return super(createHost, self).form_valid(form)
 
-class createGroup(createHost):
+class createGroup(generic.CreateView):
     form_class = CreateGroupForm
     model = Groups
     template_name = 'inventories/createGroup.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(createGroup, self).get_context_data(**kwargs)
+        context['inv_pk'] = self.kwargs['pk']
+        return context
+
+    def get_form_kwargs(self):
+        kwargs = super(createGroup, self).get_form_kwargs()
+        kwargs['inv_pk'] = self.kwargs['pk']
+        return kwargs
+
+    def get_success_url(self):
+        return reverse('inventories:manageInventory', kwargs={'pk': self.kwargs['pk']})
 
 
 class deleteInventory(generic.DeleteView):
