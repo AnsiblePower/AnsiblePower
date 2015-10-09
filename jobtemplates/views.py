@@ -99,8 +99,8 @@ def runInv(request, **kwargs):
     utils.VERBOSITY = 3
     playbook_cb = callbacks.PlaybookCallbacks(verbose=utils.VERBOSITY)
     stats = callbacks.AggregateStats()
-    #runner_cb = callbacks.PlaybookRunnerCallbacks(stats, verbose=utils.VERBOSITY)
-    runner_cb = myCustCallback(stats, template.pk, verbose=utils.VERBOSITY)
+    runner_cb = callbacks.PlaybookRunnerCallbacks(stats, verbose=utils.VERBOSITY)
+    #runner_cb = myCustCallback(stats, template.pk, verbose=utils.VERBOSITY)
 
     # Playbook gathering
     playbookPath = os.path.join(template.project.directory, template.playbook)

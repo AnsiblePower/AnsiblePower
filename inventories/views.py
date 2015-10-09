@@ -2,8 +2,12 @@ from django.shortcuts import render
 from django.views import generic
 from django.http import JsonResponse
 from django.core.urlresolvers import reverse
+from django.core.exceptions import ValidationError
 from .models import Inventories, Hosts, Groups
 from .forms import CreateInventoryForm, CreateHostForm, CreateGroupForm
+from Crypto.PublicKey import RSA
+import paramiko
+import socket
 
 
 class InventoriesIndex(generic.ListView):
@@ -51,7 +55,7 @@ class editHost(generic.UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super(editHost, self).get_context_data(**kwargs)
-        context['inv_pk'] = self.kwargs['pk']
+        context['inv_pk'] = Hosts.objects.get(pk=self.kwargs['pk']).inventory.pk
         return context
 
 
@@ -73,6 +77,43 @@ class createHost(generic.CreateView):
         kwargs['inv_pk'] = self.kwargs['pk']
         return kwargs
 
+    def form_valid(self, form):
+        mySocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        if form.cleaned_data['port']:
+            port = form.cleaned_data['port']
+        else:
+            port = 22
+        if form.cleaned_data['ipAddress']:
+            address = form.cleaned_data['ipAddress']
+        else:
+            address = form.cleaned_data['name']
+        try:
+            # known_hosts
+            mySocket.connect((address, port))
+            myTransport = paramiko.Transport(mySocket)
+            myTransport.start_client()
+            sshKey = myTransport.get_remote_server_key()
+            myTransport.close()
+            mySocket.close()
+
+            # SSH key pairs
+            new_key = RSA.generate(2048)
+            form.instance.publicKey = new_key.publickey().exportKey(format='OpenSSH')
+            form.instance.privateKey = new_key.exportKey()
+            form.instance.hostKey = sshKey.get_base64()
+
+            # Push public key to server
+            ssh = paramiko.SSHClient()
+            ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+            ssh.connect(address, username=form.cleaned_data['username'], password=form.cleaned_data['password'])
+            cmd = 'echo %s >> $HOME/.ssh/authorized_keys' % new_key.publickey().exportKey(format='OpenSSH')
+            ssh.exec_command(cmd)
+            ssh.close()
+
+        except socket.error, e:
+            print str(e)
+
+        return super(createHost, self).form_valid(form)
 
 class createGroup(createHost):
     form_class = CreateGroupForm

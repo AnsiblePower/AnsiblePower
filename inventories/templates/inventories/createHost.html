@@ -22,8 +22,7 @@
                     <button type="submit" class="btn btn-primary">
                         {% bootstrap_icon "ok" %} Create
                     </button>
-{# TODO: need to implement Cancel button to point to the groupList page if host was creating in a group      #}
-                    <a href="{% url 'inventories:index' %}" type="button" class="btn btn-default">
+                    <a href="{% url 'inventories:manageInventory' inv_pk %}" type="button" class="btn btn-default">
                         {% bootstrap_icon "remove" %} Cancel
                     </a>
                 {% endbuttons %}
