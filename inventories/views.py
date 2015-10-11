@@ -60,6 +60,16 @@ class editHost(generic.UpdateView):
         return context
 
 
+class editGroup(generic.DetailView):
+    model = Groups
+    template_name = 'inventories/editGroup.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(editGroup, self).get_context_data(**kwargs)
+        context['hosts_list'] = Hosts.objects.filter(group=context['object'].pk)
+        return context
+
+
 class createHost(generic.CreateView):
     form_class = CreateHostForm
     model = Hosts
