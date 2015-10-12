@@ -61,15 +61,28 @@ class editHost(generic.UpdateView):
         return context
 
 
-class manageGroup(generic.DetailView):
+class manageGroup(generic.UpdateView):
     model = Groups
     template_name = 'inventories/manageGroup.html'
+    form_class = CreateGroupForm
+
+    def get_form_kwargs(self):
+        kwargs = super(manageGroup, self).get_form_kwargs()
+        kwargs['inv_pk'] = self.kwargs['pk']
+        return kwargs
 
     def get_context_data(self, **kwargs):
         context = super(manageGroup, self).get_context_data(**kwargs)
         context['hosts_list'] = Hosts.objects.filter(group=context['object'].pk)
         context['all_hosts'] = Hosts.objects.exclude(group=context['object'].pk)
         return context
+
+    def get_success_url(self):
+        return reverse('inventories:manageGroup', kwargs={'pk': self.kwargs['pk']})
+
+    def form_valid(self, form):
+        print form.has_changed()
+        return super(manageGroup, self).form_valid(form)
 
 
 class createHost(generic.CreateView):
@@ -145,9 +158,6 @@ class createGroup(generic.CreateView):
         kwargs = super(createGroup, self).get_form_kwargs()
         kwargs['inv_pk'] = self.kwargs['pk']
         return kwargs
-
-    def get_success_url(self):
-        return reverse('inventories:manageInventory', kwargs={'pk': self.kwargs['pk']})
 
 
 class deleteInventory(generic.DeleteView):

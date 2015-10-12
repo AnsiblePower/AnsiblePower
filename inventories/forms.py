@@ -49,12 +49,10 @@ class CreateHostForm(CreateInventoryForm):
         super(CreateHostForm, self).save()
 
 
-
-
-
 class CreateGroupForm(CreateInventoryForm):
     #name = forms.CharField(max_length=255)
     inventory = forms.ModelChoiceField(queryset=Inventories.objects.all(), widget=forms.HiddenInput)
+    hosts = forms.ModelMultipleChoiceField(queryset='')
 
     class Meta:
         model = Groups
@@ -63,6 +61,8 @@ class CreateGroupForm(CreateInventoryForm):
     def __init__(self, inv_pk, *args, **kwargs):
         super(CreateGroupForm, self).__init__(*args, **kwargs)
         self.fields['inventory'].initial = inv_pk
+        print self.instance.pk
+        # Check if form is using for update view and prefill fields:
 
 
 

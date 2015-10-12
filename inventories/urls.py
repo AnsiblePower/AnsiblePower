@@ -11,5 +11,5 @@ urlpatterns = [
     url(r'^edithost/(?P<pk>\d+)', views.editHost.as_view(), name='editHost'),
     url(r'^creategroup/(?P<pk>\d+)', views.createGroup.as_view(), name='createGroup'),
     url(r'^managegroup/(?P<pk>\d+)', views.manageGroup.as_view(), name='manageGroup'),
-    url(r'^balancegroup/(?P<pk>\d+)', views.balanceGroup, name='balanceGroup'),
+    # url(r'^balancegroup/(?P<pk>\d+)', views.balanceGroup, name='balanceGroup'),
 ]
