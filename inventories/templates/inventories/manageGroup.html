@@ -12,12 +12,16 @@
             </div>
             <form id="{{ object.pk }}" method="post" action="{% url 'inventories:manageGroup' object.pk %}">
                 {% csrf_token %}
-                <select name="from[]" id="search" class="form-control" size="8" multiple="multiple">
+                {{ form.hosts }}
+{#                <select name="helloworld" id="search" class="form-control" size="8" multiple="multiple">#}
 {#                    {% for host in  hosts_list %}#}
-                    {% for host in  hosts_list %}
-                        <option value="{{ host.pk }}">{{ host.name }}</option>
-                    {% endfor %}
-                </select>
+{#                    {% for host in  hosts_list %}#}
+{#                        <option value="{{ host.pk }}">{{ host.name }}</option>#}
+{##}
+{#                    {% endfor %}#}
+{#                </select>#}
+
+
                 {% bootstrap_field form.name field_class='hidden' show_label=False %}
                 {% bootstrap_field form.inventory field_class='hidden' show_label=False %}
                 {% bootstrap_field form.variables %}
@@ -53,6 +57,7 @@
             </select>
         </div>
     </div>
+    {{ form }}
 {% endblock jumbotron %}
 {% block jsload %}
     {{ block.super }}

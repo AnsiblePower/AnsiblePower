@@ -159,6 +159,9 @@ class createGroup(generic.CreateView):
         kwargs['inv_pk'] = self.kwargs['pk']
         return kwargs
 
+    def get_success_url(self):
+        return reverse('inventories:manageInventory', kwargs={'pk': self.kwargs['pk']})
+
 
 class deleteInventory(generic.DeleteView):
     model = Inventories
