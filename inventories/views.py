@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.views import generic
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.core.exceptions import ValidationError
 from .models import Inventories, Hosts, Groups
@@ -56,17 +56,19 @@ class editHost(generic.UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super(editHost, self).get_context_data(**kwargs)
-        context['inv_pk'] = Hosts.objects.get(pk=self.kwargs['pk']).inventory.pk
+        # context['inv_pk'] = Hosts.objects.get(pk=self.kwargs['pk']).inventory.
+        context['inv_pk'] = Inventories.objects.filter(hosts__pk=self.kwargs['pk'])
         return context
 
 
-class editGroup(generic.DetailView):
+class manageGroup(generic.DetailView):
     model = Groups
-    template_name = 'inventories/editGroup.html'
+    template_name = 'inventories/manageGroup.html'
 
     def get_context_data(self, **kwargs):
-        context = super(editGroup, self).get_context_data(**kwargs)
+        context = super(manageGroup, self).get_context_data(**kwargs)
         context['hosts_list'] = Hosts.objects.filter(group=context['object'].pk)
+        context['all_hosts'] = Hosts.objects.exclude(group=context['object'].pk)
         return context
 
 
@@ -75,6 +77,7 @@ class createHost(generic.CreateView):
     model = Hosts
     template_name = 'inventories/createHost.html'
 
+    # Adding to context (templates)
     def get_context_data(self, **kwargs):
         context = super(createHost, self).get_context_data(**kwargs)
         context['inv_pk'] = self.kwargs['pk']
@@ -83,6 +86,7 @@ class createHost(generic.CreateView):
     def get_success_url(self):
         return reverse('inventories:manageInventory', kwargs={'pk': self.kwargs['pk']})
 
+    # Adding to form class instantiating
     def get_form_kwargs(self):
         kwargs = super(createHost, self).get_form_kwargs()
         kwargs['inv_pk'] = self.kwargs['pk']
@@ -126,6 +130,7 @@ class createHost(generic.CreateView):
 
         return super(createHost, self).form_valid(form)
 
+
 class createGroup(generic.CreateView):
     form_class = CreateGroupForm
     model = Groups
@@ -153,4 +158,13 @@ class deleteInventory(generic.DeleteView):
     def post(self, request, *args, **kwargs):
         self.delete(request, *args, **kwargs)
         return JsonResponse({})
+
+
+def balanceGroup(request, *args, **kwargs):
+    if request.method == 'POST':
+        group = Groups.objects.get(pk=kwargs['pk'])
+        for i in request.POST.getlist('from[]'):
+            host = Hosts.objects.get(pk=i)
+            host.group.add(group)
+        return HttpResponseRedirect(reverse('inventories:manageGroup', kwargs={'pk': kwargs['pk']}))
 

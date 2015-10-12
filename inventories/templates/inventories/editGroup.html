@@ -1,7 +1,0 @@
-{% extends 'inventories/base.html' %}
-{% block jumbotron %}
-    {{ object }}
-    {% for host in hosts_list %}
-        {{ host.name }}
-    {% endfor %}
-{% endblock jumbotron %}

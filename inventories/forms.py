@@ -29,8 +29,10 @@ class CreateHostForm(CreateInventoryForm):
     port = forms.IntegerField(max_value=65535, min_value=1, required=False)
     username = forms.CharField(max_length=255)
     password = forms.CharField(max_length=255, widget=forms.PasswordInput)
-    group = forms.ModelChoiceField(queryset=Groups.objects.all(), widget=forms.HiddenInput, required=False)
-    inventory = forms.ModelChoiceField(queryset=Inventories.objects.all(), widget=forms.HiddenInput)
+    group = forms.ModelMultipleChoiceField(queryset=Groups.objects.all(),
+                                           widget=forms.HiddenInput, required=False)
+    inventory = forms.ModelMultipleChoiceField(queryset=Inventories.objects.all(),
+                                               required=False)
     hostKey = forms.CharField(widget=forms.HiddenInput, required=False)
     publicKey = forms.CharField(widget=forms.HiddenInput, required=False)
     privateKey = forms.CharField(widget=forms.HiddenInput, required=False)
@@ -42,6 +44,12 @@ class CreateHostForm(CreateInventoryForm):
     def __init__(self, inv_pk, *args, **kwargs):
         super(CreateHostForm, self).__init__(*args, **kwargs)
         self.fields['inventory'].initial = inv_pk
+
+    def save(self, commit=True):
+        super(CreateHostForm, self).save()
+
+
+
 
 
 class CreateGroupForm(CreateInventoryForm):

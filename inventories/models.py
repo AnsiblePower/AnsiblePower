@@ -39,8 +39,10 @@ class Hosts(models.Model):
     publicKey = models.TextField(null=True)
     description = models.CharField(max_length=255, null=True)
     variables = models.TextField(null=True, blank=True)
-    inventory = models.ForeignKey(Inventories)
-    group = models.ForeignKey(Groups, null=True)
+    inventory = models.ManyToManyField(Inventories)
+    username = models.CharField(max_length=255, null=True)
+    password = models.CharField(max_length=255, null=True)
+    group = models.ManyToManyField(Groups)
 
     def __unicode__(self):
         return self.name

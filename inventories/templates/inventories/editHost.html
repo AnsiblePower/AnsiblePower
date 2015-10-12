@@ -17,12 +17,13 @@
                 {% bootstrap_field form.description %}
                 {% bootstrap_field form.username %}
                 {% bootstrap_field form.password %}
-                {% bootstrap_field form.inventory %}
+                {% bootstrap_field form.inventory field_class='hidden' show_label=False %}
                 {% buttons %}
                     <button type="submit" class="btn btn-primary">
                         {% bootstrap_icon "ok" %} Save
                     </button>
-                    <a href="{% url 'inventories:manageInventory' inv_pk %}" type="button" class="btn btn-default">
+{#                    <a href="{% url 'inventories:manageInventory' inv_pk %}" type="button" class="btn btn-default">#}
+                    <a href="{{request.META.HTTP_REFERER}}" type="button" class="btn btn-default">
                         {% bootstrap_icon "remove" %} Cancel
                     </a>
                 {% endbuttons %}
