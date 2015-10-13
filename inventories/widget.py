@@ -12,7 +12,7 @@ class SelectMultipleCust(SelectMultiple):
         if value is None:
             value = []
         final_attrs = self.build_attrs(attrs, name=name)
-        output = [format_html('<select name="helloworld" id="search" class="form-control" size="8" multiple="multiple">')]
+        output = [format_html('<select name="hosts[]" id="search" class="form-control" size="8" multiple="multiple">')]
                               # flatatt(final_attrs))]
         options = self.render_options(choices, value)
         if options:

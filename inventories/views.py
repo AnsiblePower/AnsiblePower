@@ -81,7 +81,8 @@ class manageGroup(generic.UpdateView):
         return reverse('inventories:manageGroup', kwargs={'pk': self.kwargs['pk']})
 
     def form_valid(self, form):
-        print form.has_changed()
+        for choice in form.fields['hosts'].choices:
+            print choice
         return super(manageGroup, self).form_valid(form)
 
 

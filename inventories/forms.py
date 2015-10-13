@@ -2,6 +2,7 @@ from django import forms
 from django.core.validators import validate_ipv46_address
 from .models import Inventories, Hosts, Groups ,validateYAML
 from .widget import SelectMultipleCust
+from django.contrib.admin.widgets import FilteredSelectMultiple
 
 
 
@@ -53,8 +54,7 @@ class CreateHostForm(CreateInventoryForm):
 class CreateGroupForm(CreateInventoryForm):
     #name = forms.CharField(max_length=255)
     inventory = forms.ModelChoiceField(queryset=Inventories.objects.all(), widget=forms.HiddenInput)
-    hosts = forms.ModelMultipleChoiceField(queryset=Hosts.objects.all(), required=False,
-                                           widget=SelectMultipleCust)
+    hosts = forms.ModelMultipleChoiceField(queryset=Hosts.objects.all(), required=False, widget=SelectMultipleCust)
 
     class Meta:
         model = Groups
@@ -63,9 +63,10 @@ class CreateGroupForm(CreateInventoryForm):
     def __init__(self, inv_pk, *args, **kwargs):
         super(CreateGroupForm, self).__init__(*args, **kwargs)
         self.fields['inventory'].initial = inv_pk
-        #self.instance.hosts = Hosts.objects.filter(group=self.instance.pk)
         self.fields['hosts'].queryset = Hosts.objects.filter(group=self.instance.pk)
         # Check if form is using for update view and prefill fields:
+
+
 
 
 
