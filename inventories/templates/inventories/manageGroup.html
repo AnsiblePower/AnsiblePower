@@ -13,20 +13,11 @@
             <form id="{{ object.pk }}" method="post" action="{% url 'inventories:manageGroup' object.pk %}">
                 {% csrf_token %}
                 {{ form.hosts }}
-{#                <select name="helloworld" id="search" class="form-control" size="8" multiple="multiple">#}
-{#                    {% for host in  hosts_list %}#}
-{#                    {% for host in  hosts_list %}#}
-{#                        <option value="{{ host.pk }}">{{ host.name }}</option>#}
-{##}
-{#                    {% endfor %}#}
-{#                </select>#}
-
-
                 {% bootstrap_field form.name field_class='hidden' show_label=False %}
                 {% bootstrap_field form.inventory field_class='hidden' show_label=False %}
                 {% bootstrap_field form.variables %}
                 {% buttons %}
-                    <button type="submit" id="gogo" class="btn btn-primary">
+                    <button type="submit" id="saveMultiselect" class="btn btn-primary">
                         {% bootstrap_icon "ok" %} Save
                     </button>
                     <a href="{{ request.META.HTTP_REFERER }}" type="button" class="btn btn-default">
@@ -61,20 +52,6 @@
 {% block jsload %}
     {{ block.super }}
     <script src="{% static 'js/multiselect.js' %}"></script>
-    <script type="text/javascript">
-        jQuery(document).ready(function ($) {
-            $('#search').multiselect({
-                search: {
-                    left: '<input type="text" name="q" class="form-control" placeholder="Search..." />',
-                    right: '<input type="text" name="q" class="form-control" placeholder="Search..." />',
-                }
-            });
-        });
-        $('#gogo').on('click', function(event){
-            var s1 = document.getElementsByName('hosts[]')[0];
-            for(var i=0; i < s1.options.length; i++){
-               s1.options[i].selected = true;
-            }
-        })
-    </script>
+    <script src="{% static 'js/multiselectPost.js' %}"></script>
+
 {% endblock jsload %}

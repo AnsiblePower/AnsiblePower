@@ -1,9 +1,8 @@
 from django import forms
-from django.core.validators import validate_ipv46_address
-from .models import Inventories, Hosts, Groups ,validateYAML
+from .models import Inventories, Hosts, Groups
+from .fieldValidators import validateYAML
 from .widget import SelectMultipleCust
-from django.contrib.admin.widgets import FilteredSelectMultiple
-
+from .fields import hostsField
 
 
 class CreateInventoryForm(forms.ModelForm):
@@ -52,9 +51,8 @@ class CreateHostForm(CreateInventoryForm):
 
 
 class CreateGroupForm(CreateInventoryForm):
-    #name = forms.CharField(max_length=255)
     inventory = forms.ModelChoiceField(queryset=Inventories.objects.all(), widget=forms.HiddenInput)
-    hosts = forms.ModelMultipleChoiceField(queryset=Hosts.objects.all(), required=False, widget=SelectMultipleCust)
+    hosts = hostsField(queryset=Hosts.objects.all(), required=False, widget=SelectMultipleCust)
 
     class Meta:
         model = Groups
@@ -63,11 +61,38 @@ class CreateGroupForm(CreateInventoryForm):
     def __init__(self, inv_pk, *args, **kwargs):
         super(CreateGroupForm, self).__init__(*args, **kwargs)
         self.fields['inventory'].initial = inv_pk
-        self.fields['hosts'].queryset = Hosts.objects.filter(group=self.instance.pk)
+        self.fields['hosts'].initial = Hosts.objects.filter(group=self.instance.pk)
         # Check if form is using for update view and prefill fields:
 
+    def save(self, commit=True):
+        # Check if this form for create group or for update (edit)
+        if self.instance.pk:
+            # Check if form was modified
+            if self.has_changed():
+                print "CHANGED"
+                group = self.instance
+                form_ids = []
+                db_ids = []
+                for host in self.cleaned_data['hosts']:
+                    form_ids.append(host.pk)
+                for host in self.fields['hosts'].initial:
+                    db_ids.append(host.pk)
+                # Check if host lists was modified
+                if cmp(db_ids, form_ids) != 0:
+                    delete = set(db_ids).difference(form_ids)
+                    add = set(form_ids).difference(db_ids)
+                    # Delete Host from Group
+                    if delete:
+                        hostdel = Hosts.objects.filter(pk__in=delete)
+                        print "Delete: " + str(hostdel)
+                        group.hosts_set.remove(*hostdel)
+                    # Add Host to Group
+                    if add:
+                        hostadd = Hosts.objects.filter(pk__in=add)
+                        print "Add: " + str(hostadd)
+                        group.hosts_set.add(*hostadd)
 
-
+        super(CreateGroupForm, self).save()
 
 
 

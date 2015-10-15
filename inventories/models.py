@@ -1,9 +1,5 @@
 from django.db import models
-from django.core.exceptions import ValidationError
-from yaml.error import MarkedYAMLError
-import yaml
-import socket
-import paramiko
+
 
 
 class Inventories(models.Model):
@@ -46,13 +42,4 @@ class Hosts(models.Model):
 
     def __unicode__(self):
         return self.name
-
-
-def validateYAML(yamlText):
-    try:
-        yaml.load(yamlText)
-        return True
-    except MarkedYAMLError, e:
-        raise ValidationError('YAML syntax error: %s' % str(e))
-
 

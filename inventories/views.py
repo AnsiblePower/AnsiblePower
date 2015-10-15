@@ -80,11 +80,6 @@ class manageGroup(generic.UpdateView):
     def get_success_url(self):
         return reverse('inventories:manageGroup', kwargs={'pk': self.kwargs['pk']})
 
-    def form_valid(self, form):
-        for choice in form.fields['hosts'].choices:
-            print choice
-        return super(manageGroup, self).form_valid(form)
-
 
 class createHost(generic.CreateView):
     form_class = CreateHostForm
