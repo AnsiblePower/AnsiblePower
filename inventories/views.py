@@ -61,15 +61,30 @@ class editHost(generic.UpdateView):
         return context
 
 
+class groupIndex(generic.ListView):
+    model = Groups
+    template_name = 'inventories/groupIndex.html'
+    paginate_by = 5
+
+
+class editGroup(generic.UpdateView):
+    model = Groups
+    form_class = CreateGroupForm
+    template_name = 'inventories/editGroup.html'
+
+    def get_success_url(self):
+        return reverse('inventories:groupIndex')
+
+
 class manageGroup(generic.UpdateView):
     model = Groups
     template_name = 'inventories/manageGroup.html'
     form_class = CreateGroupForm
 
-    def get_form_kwargs(self):
-        kwargs = super(manageGroup, self).get_form_kwargs()
-        kwargs['inv_pk'] = self.kwargs['pk']
-        return kwargs
+    # def get_form_kwargs(self):
+    #     kwargs = super(manageGroup, self).get_form_kwargs()
+    #     kwargs['inv_pk'] = self.kwargs['pk']
+    #     return kwargs
 
     def get_context_data(self, **kwargs):
         context = super(manageGroup, self).get_context_data(**kwargs)
@@ -78,7 +93,7 @@ class manageGroup(generic.UpdateView):
         return context
 
     def get_success_url(self):
-        return reverse('inventories:manageGroup', kwargs={'pk': self.kwargs['pk']})
+        return reverse('inventories:groupIndex')
 
 
 class createHost(generic.CreateView):
@@ -167,13 +182,3 @@ class deleteInventory(generic.DeleteView):
     def post(self, request, *args, **kwargs):
         self.delete(request, *args, **kwargs)
         return JsonResponse({})
-
-
-def balanceGroup(request, *args, **kwargs):
-    if request.method == 'POST':
-        group = Groups.objects.get(pk=kwargs['pk'])
-        for i in request.POST.getlist('from[]'):
-            host = Hosts.objects.get(pk=i)
-            host.group.add(group)
-        return HttpResponseRedirect(reverse('inventories:manageGroup', kwargs={'pk': kwargs['pk']}))
-

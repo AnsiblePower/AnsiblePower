@@ -16,6 +16,8 @@ virtualenv ~vagrant/venv
 chown -R vagrant:vagrant ~vagrant/venv
 #cd /vagrant/venv
 source ~vagrant/venv/bin/activate
-pip install Django GitPython Jinja2 MarkupSafe PyYAML ansible ansible-role-manager argparse colorama gitdb hgapi paramiko pycrypto pysphere requests semantic-version smmap wsgiref django-bootstrap3
+pip install Django GitPython Jinja2 MarkupSafe PyYAML ansible ansible-role-manager argparse colorama gitdb hgapi \
+    paramiko pycrypto pysphere requests semantic-version smmap wsgiref django-bootstrap3 \
+    django-bootstrap-breadcrumbs
 #pip install Django==1.8.4, GitPython==0.3.2.RC1, Jinja2==2.8, MarkupSafe==0.23, PyYAML==3.11, ansible==1.9.3, ansible-role-manager==0.4, argparse==1.2.1, colorama==0.3.3, django-crispy-forms==1.5.2, gitdb==0.6.4, hgapi==1.7.2, paramiko==1.15.2, pycrypto==2.6.1, pysphere==0.1.7, requests==2.7.0, semantic-version==2.4.2, smmap==0.9.0, wsgiref==0.1.2
 fi

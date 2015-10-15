@@ -9,7 +9,10 @@ urlpatterns = [
     url(r'^manageinventory/(?P<pk>\d+)', views.manageInventory.as_view(), name='manageInventory'),
     url(r'^createhost/(?P<pk>\d+)', views.createHost.as_view(), name='createHost'),
     url(r'^edithost/(?P<pk>\d+)', views.editHost.as_view(), name='editHost'),
+    url(r'^groupindex/', views.groupIndex.as_view(), name='groupIndex'),
     url(r'^creategroup/(?P<pk>\d+)', views.createGroup.as_view(), name='createGroup'),
+    url(r'^creategroup/', views.createGroup.as_view(), name='createGroup'),
+    url(r'^editgroup/(?P<pk>\d+)', views.editGroup.as_view(), name='editGroup'),
     url(r'^managegroup/(?P<pk>\d+)', views.manageGroup.as_view(), name='manageGroup'),
     # url(r'^balancegroup/(?P<pk>\d+)', views.balanceGroup, name='balanceGroup'),
 ]

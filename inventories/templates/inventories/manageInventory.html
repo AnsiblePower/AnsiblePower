@@ -1,5 +1,12 @@
 {% extends 'inventories/base.html' %}
+{% load django_bootstrap_breadcrumbs %}
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Inventories" 'inventories:index' %}
+    {% breadcrumb object.name 'inventories:manageInventory' object.pk %}
+{% endblock breadcrumbs %}
 {% block jumbotron %}
+    {{ block.super }}
     <div class="row">
         <div class="col col-md-1">
             <a href={% url 'inventories:createGroup' object.pk %} type="button" class="btn btn-info">

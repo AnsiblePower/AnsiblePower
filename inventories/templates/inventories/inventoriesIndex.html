@@ -1,5 +1,11 @@
 {% extends "inventories/base.html" %}
+{% load django_bootstrap_breadcrumbs %}
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Inventories" 'inventories:index' %}
+{% endblock breadcrumbs %}
 {% block jumbotron %}
+    {{ block.super }}
     <div>
         <div class="col-md1 col-md-offset-11" align="right">
             <a href={% url 'inventories:createInventory' %} type="button" class="btn btn-info">

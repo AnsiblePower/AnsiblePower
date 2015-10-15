@@ -1,4 +1,5 @@
 {% load staticfiles %}
+{% load django_bootstrap_breadcrumbs %}
 <html lang="en">
 <head>
     <meta charset="utf-8">
@@ -13,7 +14,7 @@
 
     <!-- Bootstrap core CSS -->
     {#    <link href="../../dist/css/bootstrap.min.css" rel="stylesheet">#}
-{#    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">#}
+    {#    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">#}
 
     <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
     <!-- Custom styles for this template -->
@@ -43,17 +44,17 @@
                         {% block activetab %}
                             <li id="home"><a href={% url 'dashboard:index' %}>Home</a></li>
                             <li id="projects"><a href={% url 'projects:index' %}>Projects</a></li>
-                            <li id="inventories"><a href={% url 'inventories:index' %}>Inventories</a></li>
+{#                            <li id="inventories"><a href={% url 'inventories:index' %}>Inventories</a></li>#}
                             <li id="jobtemplates"><a href="{% url 'jobtemplates:index' %}">JobTemplates</a></li>
                             <li id="contact"><a href="#">Contact</a></li>
                         {% endblock activetab %}
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
                                aria-haspopup="true"
-                               aria-expanded="false">Dropdown <span class="caret"></span></a>
+                               aria-expanded="false">Inventory <span class="caret"></span></a>
                             <ul class="dropdown-menu">
-                                <li><a href="#">Action</a></li>
-                                <li><a href="#">Another action</a></li>
+                                <li><a href={% url 'inventories:index' %}>Inventory</a></li>
+                                <li><a href={% url 'inventories:groupIndex' %}>Groups</a></li>
                                 <li><a href="#">Something else here</a></li>
                                 <li role="separator" class="divider"></li>
                                 <li class="dropdown-header">Nav header</li>
@@ -73,19 +74,13 @@
             <!--/.container-fluid -->
         </nav>
     {% endblock navbar %}
+    {% block breadcrumbs %}
+        {% clear_breadcrumbs %}
+        {% breadcrumb "Home" 'dashboard:index' %}
+    {% endblock breadcrumbs %}
 
-
-    <!-- Main component for a primary marketing message or call to action -->
     {% block jumbotron %}
-        <div class="jumbotron">
-            <h1>AnsiblePower</h1>
-
-            <p>This is project to orchestrate ansible through web console</p>
-
-            <p>
-                <a class="btn btn-lg btn-primary" href="https://github.com/AnsiblePower/AnsiblePower" role="button">View source on GitHub »</a>
-            </p>
-        </div>
+        {% render_breadcrumbs %}
     {% endblock jumbotron %}
 
 

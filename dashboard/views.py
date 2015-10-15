@@ -5,5 +5,5 @@ from django.views import generic
 
 
 class DashboardView(generic.TemplateView):
-    template_name = 'dashboard/base.html'
+    template_name = 'dashboard/index.html'
 

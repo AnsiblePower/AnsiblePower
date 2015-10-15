@@ -1,4 +1,4 @@
-{% extends "jobtemplates/base.html" %}
+{% extends "inventories/base.html" %}
 {% load staticfiles %}
 {% load bootstrap3 %}
 {% bootstrap_css %}
@@ -7,36 +7,29 @@
 {% load django_bootstrap_breadcrumbs %}
 {% block breadcrumbs %}
     {{ block.super }}
-    {% breadcrumb "JobTemplates" 'jobtemplates:index' %}
-    {% breadcrumb object.name 'jobtemplates:editJobTemplate' object.pk %}
+    {% breadcrumb object.name 'inventories:editGroup' object.pk %}
 {% endblock breadcrumbs %}
 {% block jumbotron %}
     {{ block.super }}
     <div class="row">
-        <form action="{% url 'jobtemplates:editJobTemplate' pk=object.pk %}" method="post" class="form">
-            <div class="col col-md-6">
+        <form action="{% url 'inventories:editGroup' pk=object.pk %}" method="post" class="form">
+            <div class="col col-md-12">
                 {% csrf_token %}
                 {% bootstrap_field form.name %}
                 {% bootstrap_field form.description %}
-                {% bootstrap_field form.run_types %}
-                {% bootstrap_field form.project %}
-                {% bootstrap_field form.inventory %}
-                {% bootstrap_field form.playbook %}
+                {% bootstrap_field form.variables %}
                 {% buttons %}
                     <button type="submit" class="btn btn-primary">
                         {% bootstrap_icon "ok" %} Save
                     </button>
-                    <a href="{% url 'jobtemplates:index' %}" type="button" class="btn btn-default">
+                    <a href="{% url 'inventories:groupIndex' %}" type="button" class="btn btn-default">
                         {% bootstrap_icon "remove" %} Cancel
                     </a>
                 {% endbuttons %}
             </div>
-            <div class="col col-md-6">
-                {% bootstrap_field form.extra_variables %}
-            </div>
         </form>
     </div>
-    {% include 'jobtemplates/codemirror.html' %}
+    {% include 'inventories/codemirror.html' %}
 {% endblock jumbotron %}
 {% block jsload %}
     {{ block.super }}
