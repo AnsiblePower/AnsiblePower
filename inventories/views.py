@@ -41,6 +41,67 @@ class manageInventory(generic.DetailView):
         return context
 
 
+class groupIndex(generic.ListView):
+    model = Groups
+    template_name = 'inventories/groupIndex.html'
+    paginate_by = 5
+
+
+class manageGroup(generic.UpdateView):
+    model = Groups
+    template_name = 'inventories/manageGroup.html'
+    form_class = CreateGroupForm
+
+    # def get_form_kwargs(self):
+    #     kwargs = super(manageGroup, self).get_form_kwargs()
+    #     kwargs['inv_pk'] = self.kwargs['pk']
+    #     return kwargs
+
+    def get_context_data(self, **kwargs):
+        context = super(manageGroup, self).get_context_data(**kwargs)
+        context['hosts_list'] = Hosts.objects.filter(group=context['object'].pk)
+        context['all_hosts'] = Hosts.objects.exclude(group=context['object'].pk)
+        if 'inv_id' in self.kwargs:
+            context['inv'] = Inventories.objects.get(pk=self.kwargs['inv_id'])
+        return context
+
+    def get_success_url(self):
+        # TODO: fix this bug. Need to return valid success url.
+        if 'inv_id' in self.kwargs:
+            return reverse('inventories:manageInventory', kwargs={'pk': self.kwargs['inv_id']})
+        else:
+            print "inv"
+            return reverse('inventories:groupIndex')
+
+
+class editGroup(manageGroup):
+    model = Groups
+    form_class = CreateGroupForm
+    template_name = 'inventories/editGroup.html'
+
+    def get_success_url(self):
+        return reverse('inventories:groupIndex')
+
+
+class createGroup(generic.CreateView):
+    form_class = CreateGroupForm
+    model = Groups
+    template_name = 'inventories/createGroup.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(createGroup, self).get_context_data(**kwargs)
+        context['inv_pk'] = self.kwargs['pk']
+        return context
+
+    def get_form_kwargs(self):
+        kwargs = super(createGroup, self).get_form_kwargs()
+        kwargs['inv_pk'] = self.kwargs['pk']
+        return kwargs
+
+    def get_success_url(self):
+        return reverse('inventories:manageInventory', kwargs={'pk': self.kwargs['pk']})
+
+
 class editHost(generic.UpdateView):
     model = Hosts
     form_class = CreateHostForm
@@ -59,41 +120,6 @@ class editHost(generic.UpdateView):
         # context['inv_pk'] = Hosts.objects.get(pk=self.kwargs['pk']).inventory.
         context['inv_pk'] = Inventories.objects.filter(hosts__pk=self.kwargs['pk'])
         return context
-
-
-class groupIndex(generic.ListView):
-    model = Groups
-    template_name = 'inventories/groupIndex.html'
-    paginate_by = 5
-
-
-class editGroup(generic.UpdateView):
-    model = Groups
-    form_class = CreateGroupForm
-    template_name = 'inventories/editGroup.html'
-
-    def get_success_url(self):
-        return reverse('inventories:groupIndex')
-
-
-class manageGroup(generic.UpdateView):
-    model = Groups
-    template_name = 'inventories/manageGroup.html'
-    form_class = CreateGroupForm
-
-    # def get_form_kwargs(self):
-    #     kwargs = super(manageGroup, self).get_form_kwargs()
-    #     kwargs['inv_pk'] = self.kwargs['pk']
-    #     return kwargs
-
-    def get_context_data(self, **kwargs):
-        context = super(manageGroup, self).get_context_data(**kwargs)
-        context['hosts_list'] = Hosts.objects.filter(group=context['object'].pk)
-        context['all_hosts'] = Hosts.objects.exclude(group=context['object'].pk)
-        return context
-
-    def get_success_url(self):
-        return reverse('inventories:groupIndex')
 
 
 class createHost(generic.CreateView):
@@ -153,25 +179,6 @@ class createHost(generic.CreateView):
             print str(e)
 
         return super(createHost, self).form_valid(form)
-
-
-class createGroup(generic.CreateView):
-    form_class = CreateGroupForm
-    model = Groups
-    template_name = 'inventories/createGroup.html'
-
-    def get_context_data(self, **kwargs):
-        context = super(createGroup, self).get_context_data(**kwargs)
-        context['inv_pk'] = self.kwargs['pk']
-        return context
-
-    def get_form_kwargs(self):
-        kwargs = super(createGroup, self).get_form_kwargs()
-        kwargs['inv_pk'] = self.kwargs['pk']
-        return kwargs
-
-    def get_success_url(self):
-        return reverse('inventories:manageInventory', kwargs={'pk': self.kwargs['pk']})
 
 
 class deleteInventory(generic.DeleteView):

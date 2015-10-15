@@ -4,7 +4,19 @@
 {% bootstrap_css %}
 {% bootstrap_javascript %}
 {% bootstrap_messages %}
+{% load django_bootstrap_breadcrumbs %}
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% if inv %}
+        {% breadcrumb "Inventories" 'inventories:index' %}
+        {% breadcrumb inv.name 'inventories:manageInventory' inv.pk %}
+    {% else %}
+        {% breadcrumb "Groups" 'inventories:groupIndex' %}
+    {% endif %}
+    {% breadcrumb object.name 'inventories:manageGroup' object.pk %}
+{% endblock breadcrumbs %}
 {% block jumbotron %}
+    {{ block.super }}
     <div class="row">
         <div class="col col-md-5">
             <div class="text-center">

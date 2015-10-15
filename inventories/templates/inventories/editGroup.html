@@ -7,7 +7,13 @@
 {% load django_bootstrap_breadcrumbs %}
 {% block breadcrumbs %}
     {{ block.super }}
-    {% breadcrumb object.name 'inventories:editGroup' object.pk %}
+    {% if inv %}
+        {% breadcrumb "Inventories" 'inventories:index' %}
+        {% breadcrumb inv.name 'inventories:manageInventory' inv.pk %}
+    {% else %}
+        {% breadcrumb "Groups" 'inventories:groupIndex' %}
+    {% endif %}
+    {% breadcrumb object.name 'inventories:manageGroup' object.pk %}
 {% endblock breadcrumbs %}
 {% block jumbotron %}
     {{ block.super }}
@@ -22,7 +28,11 @@
                     <button type="submit" class="btn btn-primary">
                         {% bootstrap_icon "ok" %} Save
                     </button>
-                    <a href="{% url 'inventories:groupIndex' %}" type="button" class="btn btn-default">
+                    {% if inv %}
+                        <a href="{% url 'inventories:inventories:manageInventory' inv.pk %}" type="button" class="btn btn-default">
+                    {% else %}
+                        <a href="{% url 'inventories:groupIndex' %}" type="button" class="btn btn-default">
+                    {% endif %}
                         {% bootstrap_icon "remove" %} Cancel
                     </a>
                 {% endbuttons %}
