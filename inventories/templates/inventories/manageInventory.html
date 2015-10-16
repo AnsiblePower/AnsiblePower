@@ -1,4 +1,9 @@
 {% extends 'inventories/base.html' %}
+{% load staticfiles %}
+{% load bootstrap3 %}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+{% bootstrap_messages %}
 {% load django_bootstrap_breadcrumbs %}
 {% block breadcrumbs %}
     {{ block.super }}
@@ -9,30 +14,85 @@
     {{ block.super }}
     <div class="row">
         <div class="col col-md-1">
-            <a href={% url 'inventories:createGroup' object.pk %} type="button" class="btn btn-info">
-                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Add
+            <a href={% url 'inventories:createGroup' inv_id=object.pk %} type="button" class="btn btn-info">
+                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> CreateGroup
             </a>
         </div>
-        <div class="col col-md-1 col-md-offset-10">
-            <a href={% url 'inventories:createHost' object.pk %} type="button" class="btn btn-info">
-                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Add
+        <div class="col col-md-1 pull-right">
+            <a href={% url 'inventories:createHost' inv_id=object.pk %} type="button" class="btn btn-info">
+                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> CreateHost
             </a>
         </div>
     </div>
     <div class="row">
-        <div class="col col-md-6">
-            <h3>Groups</h3>
-            {% for group in group_list %}
-{#                <a href="{% url 'inventories:editHost' host.pk %}">{{ host }}</a>#}
-                <a href="{% url 'inventories:manageGroup' pk=group.pk inv_id=object.pk %}"> {{ group.name }}</a>
-            {% endfor %}
+        <div class="col col-md-5">
+            <div class="text-center">
+                Hosts in inventory {{ object.name }}
+            </div>
+            <form id="{{ object.pk }}" method="post" action="{% url 'inventories:manageInventory' object.pk %}">
+                {% csrf_token %}
+                {{ form.hosts }}
+                <div class="text-center">
+                    Groups in inventory {{ object.name }}
+                </div>
+                {{ form.groups }}
+                {% bootstrap_field form.name field_class='hidden' show_label=False %}
+                {% bootstrap_field form.variables %}
+                {% buttons %}
+                    <button type="submit" id="saveMultiselect" class="btn btn-primary">
+                        {% bootstrap_icon "ok" %} Save
+                    </button>
+                    <a href="{% url 'inventories:index' %}" type="button" class="btn btn-default">
+                        {% bootstrap_icon "remove" %} Cancel
+                    </a>
+                {% endbuttons %}
+            </form>
         </div>
-        <div class="col col-md-6">
-            <h3 align="right">Hosts</h3>
-            {% for host in hosts_list %}
-                <a href="{% url 'inventories:editHost' host.pk %}">{{ host }}</a>
-            {% endfor %}
+        <div class="col col-md-2">
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <button type="button" id="HostSearch_leftSelected" class="btn btn-block"><i
+                    class="glyphicon glyphicon-chevron-left"></i></button>
+            <button type="button" id="HostSearch_rightSelected" class="btn btn-block"><i
+                    class="glyphicon glyphicon-chevron-right"></i></button>
+        </div>
+        <div class="col col-md-5">
+            <div class="text-center">
+                Avalible hosts
+            </div>
+            <select name="to[]" id="HostSearch_to" class="form-control" size="8" multiple="multiple">
+                {% for all_host in all_hosts %}
+                    <option value="{{ all_host.pk }}">{{ all_host.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col col-md-2">
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <button type="button" id="GroupSearch_leftSelected" class="btn btn-block"><i
+                    class="glyphicon glyphicon-chevron-left"></i></button>
+            <button type="button" id="GroupSearch_rightSelected" class="btn btn-block"><i
+                    class="glyphicon glyphicon-chevron-right"></i></button>
+        </div>
+        <div class="col col-md-5">
+            <div class="text-center">
+                Avalible groups
+            </div>
+            <select name="to[]" id="GroupSearch_to" class="form-control" size="8" multiple="multiple">
+                {% for all_group in all_groups %}
+                    <option value="{{ all_group.pk }}">{{ all_group.name }}</option>
+                {% endfor %}
+            </select>
         </div>
     </div>
-
+    {% include 'inventories/codemirror.html' %}
 {% endblock jumbotron %}
+{% block jsload %}
+    {{ block.super }}
+    <script src="{% static 'js/multiselect.js' %}"></script>
+    <script src="{% static 'js/multiselectPost.js' %}"></script>
+{% endblock jsload %}

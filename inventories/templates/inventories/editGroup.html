@@ -18,25 +18,29 @@
 {% block jumbotron %}
     {{ block.super }}
     <div class="row">
-        <form action="{% url 'inventories:editGroup' pk=object.pk %}" method="post" class="form">
-            <div class="col col-md-12">
-                {% csrf_token %}
-                {% bootstrap_field form.name %}
-                {% bootstrap_field form.description %}
-                {% bootstrap_field form.variables %}
-                {% buttons %}
-                    <button type="submit" class="btn btn-primary">
-                        {% bootstrap_icon "ok" %} Save
-                    </button>
-                    {% if inv %}
-                        <a href="{% url 'inventories:inventories:manageInventory' inv.pk %}" type="button" class="btn btn-default">
-                    {% else %}
-                        <a href="{% url 'inventories:groupIndex' %}" type="button" class="btn btn-default">
-                    {% endif %}
-                        {% bootstrap_icon "remove" %} Cancel
-                    </a>
-                {% endbuttons %}
-            </div>
+        {% if inv %}
+            <form action="{% url 'inventories:editGroup' pk=object.pk inv_id=inv.pk %}" method="post" class="form">
+        {% else %}
+            <form action="{% url 'inventories:editGroup' pk=object.pk %}" method="post" class="form">
+        {% endif %}
+        <div class="col col-md-12">
+            {% csrf_token %}
+            {% bootstrap_field form.name %}
+            {% bootstrap_field form.description %}
+            {% bootstrap_field form.variables %}
+            {% buttons %}
+                <button type="submit" class="btn btn-primary">
+                    {% bootstrap_icon "ok" %} Save
+                </button>
+                {% if inv %}
+                    <a href="{% url 'inventories:manageInventory' pk=inv.pk %}" type="button" class="btn btn-default">
+                {% else %}
+                    <a href="{% url 'inventories:groupIndex' %}" type="button" class="btn btn-default">
+                {% endif %}
+            {% bootstrap_icon "remove" %} Cancel
+            </a>
+            {% endbuttons %}
+        </div>
         </form>
     </div>
     {% include 'inventories/codemirror.html' %}

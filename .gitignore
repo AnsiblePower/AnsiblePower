@@ -2,8 +2,3 @@
 /.idea
 .vagrant
 db.sqlite3
-projects/migrations
-vmware/migrations
-dashboard/migrations
-inventories/migrations
-jobtemplates/migrations

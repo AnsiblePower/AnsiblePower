@@ -2,15 +2,29 @@
  * Created by dborysenko on 10/15/2015.
  */
 
-$(document).ready(function(){
+$(document).ready(function () {
     var s1 = document.getElementsByName('hosts')[0];
-    for (var i = 0; i < s1.options.length; i++) {
-        s1.options[i].selected = false;
+    if (s1) {
+        for (var i = 0; i < s1.options.length; i++) {
+            s1.options[i].selected = false;
+        }
+    }
+    var s2 = document.getElementsByName('groups')[0];
+    if (s2) {
+        for (var j = 0; j < s2.options.length; j++) {
+            s2.options[j].selected = false;
+        }
     }
 });
 
 jQuery(document).ready(function ($) {
-    $('#search').multiselect({
+    $('#HostSearch').multiselect({
+        search: {
+            left: '<input type="text" name="q" class="form-control" placeholder="Search..." />',
+            right: '<input type="text" name="q" class="form-control" placeholder="Search..." />',
+        }
+    });
+    $('#GroupSearch').multiselect({
         search: {
             left: '<input type="text" name="q" class="form-control" placeholder="Search..." />',
             right: '<input type="text" name="q" class="form-control" placeholder="Search..." />',
@@ -19,7 +33,15 @@ jQuery(document).ready(function ($) {
 });
 $('#saveMultiselect').on('click', function (event) {
     var s1 = document.getElementsByName('hosts')[0];
-    for (var i = 0; i < s1.options.length; i++) {
-        s1.options[i].selected = true;
+    if (s1) {
+        for (var i = 0; i < s1.options.length; i++) {
+            s1.options[i].selected = true;
+        }
+    }
+    var s2 = document.getElementsByName('groups')[0];
+    if (s2) {
+        for (var j = 0; j < s2.options.length; j++) {
+            s2.options[j].selected = true;
+        }
     }
 });

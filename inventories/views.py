@@ -1,8 +1,6 @@
-from django.shortcuts import render
 from django.views import generic
-from django.http import JsonResponse, HttpResponseRedirect
+from django.http import JsonResponse
 from django.core.urlresolvers import reverse
-from django.core.exceptions import ValidationError
 from .models import Inventories, Hosts, Groups
 from .forms import CreateInventoryForm, CreateHostForm, CreateGroupForm
 from Crypto.PublicKey import RSA
@@ -29,16 +27,22 @@ class editInventory(generic.UpdateView):
     success_url = '/inventories'
 
 
-class manageInventory(generic.DetailView):
+class manageInventory(generic.UpdateView):
     model = Inventories
     template_name = 'inventories/manageInventory.html'
+    form_class = CreateInventoryForm
 
     def get_context_data(self, **kwargs):
         context = super(manageInventory, self).get_context_data(**kwargs)
         inv_pk = context['object'].pk
         context['hosts_list'] = Hosts.objects.filter(inventory=inv_pk)
+        context['all_hosts'] = Hosts.objects.exclude(inventory=inv_pk)
         context['group_list'] = Groups.objects.filter(inventory=inv_pk)
+        context['all_groups'] = Groups.objects.exclude(inventory=inv_pk)
         return context
+
+    def get_success_url(self):
+        return reverse('inventories:index')
 
 
 class groupIndex(generic.ListView):
@@ -52,11 +56,6 @@ class manageGroup(generic.UpdateView):
     template_name = 'inventories/manageGroup.html'
     form_class = CreateGroupForm
 
-    # def get_form_kwargs(self):
-    #     kwargs = super(manageGroup, self).get_form_kwargs()
-    #     kwargs['inv_pk'] = self.kwargs['pk']
-    #     return kwargs
-
     def get_context_data(self, **kwargs):
         context = super(manageGroup, self).get_context_data(**kwargs)
         context['hosts_list'] = Hosts.objects.filter(group=context['object'].pk)
@@ -66,11 +65,9 @@ class manageGroup(generic.UpdateView):
         return context
 
     def get_success_url(self):
-        # TODO: fix this bug. Need to return valid success url.
         if 'inv_id' in self.kwargs:
             return reverse('inventories:manageInventory', kwargs={'pk': self.kwargs['inv_id']})
         else:
-            print "inv"
             return reverse('inventories:groupIndex')
 
 
@@ -78,9 +75,6 @@ class editGroup(manageGroup):
     model = Groups
     form_class = CreateGroupForm
     template_name = 'inventories/editGroup.html'
-
-    def get_success_url(self):
-        return reverse('inventories:groupIndex')
 
 
 class createGroup(generic.CreateView):
@@ -90,16 +84,35 @@ class createGroup(generic.CreateView):
 
     def get_context_data(self, **kwargs):
         context = super(createGroup, self).get_context_data(**kwargs)
-        context['inv_pk'] = self.kwargs['pk']
+        if 'inv_id' in self.kwargs:
+            context['inv'] = Inventories.objects.get(pk=self.kwargs['inv_id'])
         return context
 
     def get_form_kwargs(self):
         kwargs = super(createGroup, self).get_form_kwargs()
-        kwargs['inv_pk'] = self.kwargs['pk']
+        if 'inv_id' in self.kwargs:
+            kwargs['inv_id'] = self.kwargs['inv_id']
         return kwargs
 
     def get_success_url(self):
-        return reverse('inventories:manageInventory', kwargs={'pk': self.kwargs['pk']})
+        if 'inv_id' in self.kwargs:
+            return reverse('inventories:manageInventory', kwargs={'pk': self.kwargs['inv_id']})
+        else:
+            return reverse('inventories:groupIndex')
+
+
+class deleteGroup(generic.DeleteView):
+    model = Groups
+    template_name = 'inventories/deleteEntity.html'
+    success_url = '/inventories'
+
+    def post(self, request, *args, **kwargs):
+        if 'inv_id' in self.kwargs:
+            print "Untarget group from inventory"
+        else:
+            print "Delete group"
+            # self.delete(request, *args, **kwargs)
+        return JsonResponse({})
 
 
 class editHost(generic.UpdateView):
@@ -118,7 +131,9 @@ class editHost(generic.UpdateView):
     def get_context_data(self, **kwargs):
         context = super(editHost, self).get_context_data(**kwargs)
         # context['inv_pk'] = Hosts.objects.get(pk=self.kwargs['pk']).inventory.
-        context['inv_pk'] = Inventories.objects.filter(hosts__pk=self.kwargs['pk'])
+        # context['inv_pk'] = Inventories.objects.filter(hosts__pk=self.kwargs['pk'])
+        if 'inv_id' in self.kwargs:
+            context['inv'] = Inventories.objects.get(pk=self.kwargs['inv_id'])
         return context
 
 
@@ -130,16 +145,23 @@ class createHost(generic.CreateView):
     # Adding to context (templates)
     def get_context_data(self, **kwargs):
         context = super(createHost, self).get_context_data(**kwargs)
-        context['inv_pk'] = self.kwargs['pk']
+        # context['inv_pk'] = self.kwargs['pk']
+        if 'inv_id' in self.kwargs:
+            context['inv'] = Inventories.objects.get(pk=self.kwargs['inv_id'])
         return context
 
     def get_success_url(self):
-        return reverse('inventories:manageInventory', kwargs={'pk': self.kwargs['pk']})
+        if 'inv_id' in self.kwargs:
+            return reverse('inventories:manageInventory', kwargs={'pk': self.kwargs['inv_id']})
+        else:
+            # TODO: replace to hosts index once implemented
+            return reverse('inventories:groupIndex')
 
     # Adding to form class instantiating
     def get_form_kwargs(self):
         kwargs = super(createHost, self).get_form_kwargs()
-        kwargs['inv_pk'] = self.kwargs['pk']
+        if 'inv_id' in self.kwargs:
+            kwargs['inv_id'] = self.kwargs['inv_id']
         return kwargs
 
     def form_valid(self, form):

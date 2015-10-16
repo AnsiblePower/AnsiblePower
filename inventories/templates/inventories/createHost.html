@@ -4,10 +4,21 @@
 {% bootstrap_css %}
 {% bootstrap_javascript %}
 {% bootstrap_messages %}
-
+{% load django_bootstrap_breadcrumbs %}
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% if inv %}
+        {% breadcrumb "Inventories" 'inventories:index' %}
+        {% breadcrumb inv.name 'inventories:manageInventory' inv.pk %}
+    {% else %}
+{#        TODO: need to add Host index#}
+        {% breadcrumb "Hosts" 'inventories:groupIndex' %}
+    {% endif %}
+    {% breadcrumb object.name 'inventories:createHost' object.pk %}
+{% endblock breadcrumbs %}
 {% block jumbotron %}
     <div class="row">
-        <form action="{% url 'inventories:createHost' inv_pk %}" method="post" class="form">
+        <form action="{% url 'inventories:createHost' inv.pk %}" method="post" class="form">
             <div class="row">
             <div class="col col-md-6">
                 {% csrf_token %}
@@ -22,9 +33,16 @@
                     <button type="submit" class="btn btn-primary">
                         {% bootstrap_icon "ok" %} Create
                     </button>
-                    <a href="{% url 'inventories:manageInventory' inv_pk %}" type="button" class="btn btn-default">
+                    {% if inv %}
+                    <a href="{% url 'inventories:manageInventory' inv.pk %}" type="button" class="btn btn-default">
                         {% bootstrap_icon "remove" %} Cancel
                     </a>
+                    {% else %}
+{#                        TODO: create Host index page#}
+                        <a href="{% url 'inventories:manageInventory' inv.pk %}" type="button" class="btn btn-default">
+                        {% bootstrap_icon "remove" %} Cancel
+                    </a>
+                    {% endif %}
                 {% endbuttons %}
             </div>
             <div class="col col-md-6">

@@ -4,11 +4,26 @@
 {% bootstrap_css %}
 {% bootstrap_javascript %}
 {% bootstrap_messages %}
-
+{% load django_bootstrap_breadcrumbs %}
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% if inv %}
+        {% breadcrumb "Inventories" 'inventories:index' %}
+        {% breadcrumb inv.name 'inventories:manageInventory' inv.pk %}
+    {% else %}
+        {% breadcrumb "Group" 'inventories:groupIndex' %}
+    {% endif %}
+    {% breadcrumb "New Group" 'inventories:createGroup' object.pk %}
+{% endblock breadcrumbs %}
 {% block jumbotron %}
+    {{ block.super }}
     <div class="row">
-        <form action="{% url 'inventories:createGroup' inv_pk %}" method="post" class="form">
-            <div class="row">
+        {% if inv %}
+            <form action="{% url 'inventories:createGroup' inv_id=inv.pk %}" method="post" class="form">
+        {% else %}
+            <form action="{% url 'inventories:createGroup' %}" method="post" class="form">
+        {% endif %}
+        <div class="row">
             <div class="col col-md-6">
                 {% csrf_token %}
                 {% bootstrap_field form.name %}
@@ -18,15 +33,20 @@
                     <button type="submit" class="btn btn-primary">
                         {% bootstrap_icon "ok" %} Create
                     </button>
-                    <a href="{% url 'inventories:manageInventory' inv_pk %}" type="button" class="btn btn-default">
-                        {% bootstrap_icon "remove" %} Cancel
-                    </a>
+                    {% if inv %}
+                        <a href="{% url 'inventories:manageInventory' pk=inv.pk %}" type="button"
+                           class="btn btn-default">
+                    {% else %}
+                        <a href="{% url 'inventories:groupIndex' %}" type="button" class="btn btn-default">
+                    {% endif %}
+                {% bootstrap_icon "remove" %} Cancel
+                </a>
                 {% endbuttons %}
             </div>
             <div class="col col-md-6">
                 {% bootstrap_field form.variables %}
             </div>
-            </div>
+        </div>
         </form>
     </div>
     {% include 'inventories/codemirror.html' %}

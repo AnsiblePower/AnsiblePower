@@ -1,7 +1,6 @@
 from django.db import models
 
 
-
 class Inventories(models.Model):
     date_created = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)
@@ -18,7 +17,7 @@ class Groups(models.Model):
     date_modified = models.DateTimeField(auto_now=True)
     name = models.CharField(max_length=255)
     variables = models.TextField(null=True, blank=True)
-    inventory = models.ForeignKey(Inventories)
+    inventory = models.ManyToManyField(Inventories)
 
     def __unicode__(self):
         return self.name

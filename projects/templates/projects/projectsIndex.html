@@ -29,7 +29,8 @@
                                 <button id="deletebutton{{ object.pk }}" type="button" class="btn btn-default btn-xs"
                                         data-target=".bs-example-modal-sm" data-pk="{{ object.pk }}"
                                         data-name="{{ object.name }}"
-                                        data-posttarget="/projects/deleteproject/">
+{#                                        data-posttarget="/projects/deleteproject/">#}
+                                        data-posttarget="{% url 'projects:deleteProject' pk=object.pk %}">
                                     <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
                                 </button>
                                 <a href="{% url 'projects:editProject' pk=object.pk %}" class="btn btn-default btn-xs">
