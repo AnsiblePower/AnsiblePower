@@ -46,9 +46,9 @@
         <div class="col col-md-2">
             {#            <button type="button" id="search_rightAll" class="btn btn-block"><i class="glyphicon glyphicon-forward"></i>#}
             {#            </button>#}
-            <button type="button" id="search_leftSelected" class="btn btn-block"><i
+            <button type="button" id="HostSearch_leftSelected" class="btn btn-block"><i
                     class="glyphicon glyphicon-chevron-left"></i></button>
-            <button type="button" id="search_rightSelected" class="btn btn-block"><i
+            <button type="button" id="HostSearch_rightSelected" class="btn btn-block"><i
                     class="glyphicon glyphicon-chevron-right"></i></button>
 
             {#            <button type="button" id="search_leftAll" class="btn btn-block"><i class="glyphicon glyphicon-backward"></i>#}
@@ -58,7 +58,7 @@
             <div class="text-center">
                 Avalible hosts
             </div>
-            <select name="to[]" id="search_to" class="form-control" size="8" multiple="multiple">
+            <select name="to[]" id="HostSearch_to" class="form-control" size="8" multiple="multiple">
                 {% for all_host in all_hosts %}
                     <option value="{{ all_host.pk }}">{{ all_host.name }}</option>
                 {% endfor %}

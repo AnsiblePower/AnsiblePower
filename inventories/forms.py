@@ -57,7 +57,6 @@ class CreateInventoryForm(forms.ModelForm):
 
                 form_group_ids = []
                 db_group_ids = []
-                print self.cleaned_data
                 for group in self.cleaned_data['groups']:
                     form_group_ids.append(group.pk)
                 for group in self.fields['groups'].initial:
@@ -75,7 +74,6 @@ class CreateInventoryForm(forms.ModelForm):
                         inventory.groups_set.add(*groupadd)
 
         super(CreateInventoryForm, self).save()
-
 
 
 class CreateHostForm(forms.ModelForm):
@@ -108,11 +106,17 @@ class CreateHostForm(forms.ModelForm):
             self.initial['variables'] = '---'
 
     def save(self, commit=True):
+        if self.fields['inventory'].initial:
+            self.cleaned_data['inventory'] = self.fields['inventory'].initial
         super(CreateHostForm, self).save()
 
 
-class CreateGroupForm(CreateInventoryForm):
-    inventory = forms.ModelMultipleChoiceField(queryset=Inventories.objects.all(), widget=forms.HiddenInput, required=False)
+class CreateGroupForm(forms.ModelForm):
+    name = forms.CharField(max_length=255)
+    inventory = forms.ModelMultipleChoiceField(queryset=Inventories.objects.all(),
+                                               #widget=forms.HiddenInput,
+                                               required=False)
+    description = forms.CharField(max_length=255, required=False)
     hosts = hostsField(queryset=Hosts.objects.all(), required=False, widget=SelectHosts)
 
     class Meta:
@@ -124,8 +128,16 @@ class CreateGroupForm(CreateInventoryForm):
         self.fields['hosts'].initial = Hosts.objects.filter(group=self.instance.pk)
         if inv_id:
             self.fields['inventory'].initial = inv_id
+        if self.initial:
+            if self.instance.variables == '':
+                self.initial['variables'] = '---'
+        else:
+            self.initial['variables'] = '---'
 
     def save(self, commit=True):
+        print "SAVE"
+        if self.fields['inventory'].initial:
+            self.cleaned_data['inventory'] = self.fields['inventory'].initial
         # Check if this form for create group or for update (edit)
         if self.instance.pk:
             # Check if form was modified

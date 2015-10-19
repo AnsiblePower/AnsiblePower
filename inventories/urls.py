@@ -12,6 +12,7 @@ urlpatterns = [
     url(r'^edithost/(?P<pk>\d+)/$', views.editHost.as_view(), name='editHost'),
     url(r'^edithost/(?P<pk>\d+)/(?P<inv_id>\d+)/$', views.editHost.as_view(), name='editHost'),
     url(r'^groupindex/', views.groupIndex.as_view(), name='groupIndex'),
+    url(r'^hostindex/', views.hostIndex.as_view(), name='hostIndex'),
     url(r'^creategroup/$', views.createGroup.as_view(), name='createGroup'),
     url(r'^creategroup/(?P<inv_id>\d+)/$', views.createGroup.as_view(), name='createGroup'),
     url(r'^editgroup/(?P<pk>\d+)/$', views.editGroup.as_view(), name='editGroup'),
@@ -20,4 +21,6 @@ urlpatterns = [
     url(r'^managegroup/(?P<pk>\d+)/(?P<inv_id>\d+)/$', views.manageGroup.as_view(), name='manageGroup'),
     url(r'^deletegroup/(?P<pk>\d+)/$', views.deleteGroup.as_view(), name='deleteGroup'),
     url(r'^deletegroup/(?P<pk>\d+)/(?P<inv_id>\d+)/$', views.deleteGroup.as_view(), name='deleteGroup'),
+    url(r'^deletehost/(?P<pk>\d+)/$', views.deleteHost.as_view(), name='deleteHost'),
+    url(r'^deletehost/(?P<pk>\d+)/(?P<inv_id>\d+)/$', views.deleteHost.as_view(), name='deleteHost'),
 ]

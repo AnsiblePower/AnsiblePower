@@ -48,7 +48,7 @@ class manageInventory(generic.UpdateView):
 class groupIndex(generic.ListView):
     model = Groups
     template_name = 'inventories/groupIndex.html'
-    paginate_by = 5
+    paginate_by = 10
 
 
 class manageGroup(generic.UpdateView):
@@ -115,17 +115,27 @@ class deleteGroup(generic.DeleteView):
         return JsonResponse({})
 
 
+class hostIndex(generic.ListView):
+    model = Hosts
+    template_name = 'inventories/hostIndex.html'
+    paginate_by = 10
+
+
 class editHost(generic.UpdateView):
     model = Hosts
     form_class = CreateHostForm
     template_name = 'inventories/editHost.html'
 
     def get_success_url(self):
-        return reverse('inventories:manageInventory', kwargs={'pk': self.kwargs['pk']})
+        if 'inv_id' in self.kwargs:
+            return reverse('inventories:manageInventory', kwargs={'pk': self.kwargs['inv_id']})
+        else:
+            return reverse('inventories:hostIndex')
 
     def get_form_kwargs(self):
         kwargs = super(editHost, self).get_form_kwargs()
-        kwargs['inv_pk'] = self.kwargs['pk']
+        if 'inv_id' in self.kwargs:
+            kwargs['inv_id'] = self.kwargs['inv_id']
         return kwargs
 
     def get_context_data(self, **kwargs):
@@ -154,8 +164,7 @@ class createHost(generic.CreateView):
         if 'inv_id' in self.kwargs:
             return reverse('inventories:manageInventory', kwargs={'pk': self.kwargs['inv_id']})
         else:
-            # TODO: replace to hosts index once implemented
-            return reverse('inventories:groupIndex')
+            return reverse('inventories:hostIndex')
 
     # Adding to form class instantiating
     def get_form_kwargs(self):
@@ -205,9 +214,24 @@ class createHost(generic.CreateView):
 
 class deleteInventory(generic.DeleteView):
     model = Inventories
-    template_name = 'inventories/deleteInventory.html'
+    template_name = 'inventories/deleteEntity.html'
     success_url = '/inventories'
 
     def post(self, request, *args, **kwargs):
         self.delete(request, *args, **kwargs)
+        return JsonResponse({})
+
+
+class deleteHost(generic.DeleteView):
+    model = Hosts
+    template_name = 'inventories/deleteEntity.html'
+    success_url = '/inventories/hostindex'
+
+    def post(self, request, *args, **kwargs):
+        if 'inv_id' in self.kwargs:
+            print "Untarget host from inventory"
+        else:
+            print "Delete host"
+            # self.delete(request, *args, **kwargs)
+        self.delete(self, request, *args, **kwargs)
         return JsonResponse({})

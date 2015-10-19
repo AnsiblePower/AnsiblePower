@@ -8,4 +8,3 @@ if __name__ == "__main__":
     private_key = new_key.exportKey("PEM")
     print public_key
 
-
