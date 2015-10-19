@@ -1,4 +1,5 @@
 from django.db import models
+from encrypted_fields import EncryptedCharField
 
 
 class Inventories(models.Model):
@@ -37,7 +38,7 @@ class Hosts(models.Model):
     variables = models.TextField(null=True, blank=True)
     inventory = models.ManyToManyField(Inventories)
     username = models.CharField(max_length=255, null=True)
-    password = models.CharField(max_length=255, null=True)
+    password = EncryptedCharField(max_length=255, null=True)
     group = models.ManyToManyField(Groups)
 
     def __unicode__(self):

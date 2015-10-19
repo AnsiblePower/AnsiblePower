@@ -82,7 +82,7 @@ class CreateHostForm(forms.ModelForm):
     ipAddress = forms.GenericIPAddressField(required=False)
     port = forms.IntegerField(max_value=65535, min_value=1, required=False)
     username = forms.CharField(max_length=255)
-    password = forms.CharField(max_length=255, widget=forms.PasswordInput)
+    password = forms.CharField(max_length=255, widget=forms.PasswordInput, required=False)
     group = forms.ModelMultipleChoiceField(queryset=Groups.objects.all(),
                                            widget=forms.HiddenInput, required=False)
     inventory = forms.ModelMultipleChoiceField(queryset=Inventories.objects.all(),
