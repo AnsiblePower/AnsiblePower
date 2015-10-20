@@ -11,8 +11,7 @@
         {% breadcrumb "Inventories" 'inventories:index' %}
         {% breadcrumb inv.name 'inventories:manageInventory' inv.pk %}
     {% else %}
-{#        TODO: need to add Host index#}
-        {% breadcrumb "Hosts" 'inventories:groupIndex' %}
+        {% breadcrumb "Hosts" 'inventories:hostIndex' %}
     {% endif %}
     {% breadcrumb object.name 'inventories:editHost' object.pk %}
 {% endblock breadcrumbs %}
@@ -21,28 +20,36 @@
     <div class="row">
         <form action="{% url 'inventories:editHost' pk=object.pk %}" method="post" class="form">
             <div class="row">
-            <div class="col col-md-6">
-                {% csrf_token %}
-                {% bootstrap_field form.name %}
-                {% bootstrap_field form.ipAddress %}
-                {% bootstrap_field form.port %}
-                {% bootstrap_field form.description %}
-                {% bootstrap_field form.username %}
-                {% bootstrap_field form.password %}
-                {% bootstrap_field form.inventory field_class='hidden' show_label=False %}
-                {% buttons %}
-                    <button type="submit" class="btn btn-primary">
-                        {% bootstrap_icon "ok" %} Save
-                    </button>
-{#                    <a href="{% url 'inventories:manageInventory' inv_pk %}" type="button" class="btn btn-default">#}
-                    <a href="{{request.META.HTTP_REFERER}}" type="button" class="btn btn-default">
-                        {% bootstrap_icon "remove" %} Cancel
-                    </a>
-                {% endbuttons %}
-            </div>
-            <div class="col col-md-6">
-                {% bootstrap_field form.variables %}
-            </div>
+                <div class="col col-md-6">
+                    {% csrf_token %}
+                    {% bootstrap_field form.name %}
+                    {% bootstrap_field form.ipAddress %}
+                    {% bootstrap_field form.port %}
+                    {% bootstrap_field form.description %}
+                    {#                {% bootstrap_field form.username %}#}
+                    {#                {% bootstrap_field form.password %}#}
+                    {% bootstrap_field form.credentials %}
+                    {% bootstrap_field form.inventory form_group_class="hidden" %}
+                    {% buttons %}
+                        <button type="submit" class="btn btn-primary">
+                            {% bootstrap_icon "ok" %} Save
+                        </button>
+                        {#                    <a href="{% url 'inventories:manageInventory' inv_pk %}" type="button" class="btn btn-default">#}
+                        {% if inv %}
+                            <a href="{% url 'inventories:manageInventory' inv.pk %}" type="button"
+                               class="btn btn-default">
+                                {% bootstrap_icon "remove" %} Cancel
+                            </a>
+                        {% else %}
+                            <a href="{% url 'inventories:hostIndex' %}" type="button" class="btn btn-default">
+                                {% bootstrap_icon "remove" %} Cancel
+                            </a>
+                        {% endif %}
+                    {% endbuttons %}
+                </div>
+                <div class="col col-md-6">
+                    {% bootstrap_field form.variables %}
+                </div>
             </div>
         </form>
     </div>

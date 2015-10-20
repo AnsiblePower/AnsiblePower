@@ -30,9 +30,18 @@
                 {% bootstrap_field form.ipAddress %}
                 {% bootstrap_field form.port %}
                 {% bootstrap_field form.description %}
-                {% bootstrap_field form.username %}
-                {% bootstrap_field form.password %}
-                {% bootstrap_field form.inventory field_class='hidden' show_label=False %}
+                {% bootstrap_field form.credentials %}
+{#                {{ form.keyOrPassword.label_tag }}#}
+{#                <div>#}
+{#                {% for radio in form.keyOrPassword %}#}
+{#                    <div class="radio-inline">#}
+{#                    {{ radio }}#}
+{#                    </div>#}
+{#                {% endfor %}#}
+{#                </div>#}
+{#                {% bootstrap_field form.username form_group_class="hidden" %}#}
+{#                {% bootstrap_field form.password form_group_class="hidden" %}#}
+                {% bootstrap_field form.inventory form_group_class="hidden" %}
                 {% buttons %}
                     <button type="submit" class="btn btn-primary">
                         {% bootstrap_icon "ok" %} Create
@@ -56,3 +65,7 @@
     </div>
     {% include 'inventories/codemirror.html' %}
 {% endblock jumbotron %}
+{% block jsload %}
+    {{ block.super }}
+{#    <script src="{% static 'js/createHost.js' %}"></script>#}
+{% endblock jsload %}

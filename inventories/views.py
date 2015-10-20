@@ -1,8 +1,8 @@
 from django.views import generic
 from django.http import JsonResponse
 from django.core.urlresolvers import reverse
-from .models import Inventories, Hosts, Groups
-from .forms import CreateInventoryForm, CreateHostForm, CreateGroupForm
+from .models import Inventories, Hosts, Groups, Credentials
+from .forms import CreateInventoryForm, CreateHostForm, CreateGroupForm, CreateCredentialForm
 from Crypto.PublicKey import RSA
 import paramiko
 import socket
@@ -173,43 +173,77 @@ class createHost(generic.CreateView):
             kwargs['inv_id'] = self.kwargs['inv_id']
         return kwargs
 
-    def form_valid(self, form):
-        mySocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        if form.cleaned_data['port']:
-            port = form.cleaned_data['port']
-        else:
-            port = 22
-        if form.cleaned_data['ipAddress']:
-            address = form.cleaned_data['ipAddress']
-        else:
-            address = form.cleaned_data['name']
-        try:
-            # known_hosts
-            mySocket.connect((address, port))
-            myTransport = paramiko.Transport(mySocket)
-            myTransport.start_client()
-            sshKey = myTransport.get_remote_server_key()
-            myTransport.close()
-            mySocket.close()
+    # def form_valid(self, form):
+    #     mySocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    #     if form.cleaned_data['port']:
+    #         port = form.cleaned_data['port']
+    #     else:
+    #         port = 22
+    #     if form.cleaned_data['ipAddress']:
+    #         address = form.cleaned_data['ipAddress']
+    #     else:
+    #         address = form.cleaned_data['name']
+    #     try:
+    #         # known_hosts
+    #         mySocket.connect((address, port))
+    #         myTransport = paramiko.Transport(mySocket)
+    #         myTransport.start_client()
+    #         sshKey = myTransport.get_remote_server_key()
+    #         myTransport.close()
+    #         mySocket.close()
+    #
+    #         # SSH key pairs
+    #         new_key = RSA.generate(2048)
+    #         form.instance.publicKey = new_key.publickey().exportKey(format='OpenSSH')
+    #         form.instance.privateKey = new_key.exportKey()
+    #         form.instance.hostKey = sshKey.get_base64()
+    #
+    #         # Push public key to server
+    #         ssh = paramiko.SSHClient()
+    #         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+    #         ssh.connect(address, username=form.cleaned_data['username'], password=form.cleaned_data['password'])
+    #         cmd = 'echo %s >> $HOME/.ssh/authorized_keys' % new_key.publickey().exportKey(format='OpenSSH')
+    #         ssh.exec_command(cmd)
+    #         ssh.close()
+    #
+    #     except socket.error, e:
+    #         print str(e)
+    #
+    #     return super(createHost, self).form_valid(form)
 
-            # SSH key pairs
-            new_key = RSA.generate(2048)
-            form.instance.publicKey = new_key.publickey().exportKey(format='OpenSSH')
-            form.instance.privateKey = new_key.exportKey()
-            form.instance.hostKey = sshKey.get_base64()
 
-            # Push public key to server
-            ssh = paramiko.SSHClient()
-            ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-            ssh.connect(address, username=form.cleaned_data['username'], password=form.cleaned_data['password'])
-            cmd = 'echo %s >> $HOME/.ssh/authorized_keys' % new_key.publickey().exportKey(format='OpenSSH')
-            ssh.exec_command(cmd)
-            ssh.close()
+class createCredential(generic.CreateView):
+    model = Credentials
+    template_name = 'inventories/createCredential.html'
+    form_class = CreateCredentialForm
 
-        except socket.error, e:
-            print str(e)
+    def get_success_url(self):
+        return reverse('inventories:credentialIndex')
 
-        return super(createHost, self).form_valid(form)
+
+class editCredential(generic.UpdateView):
+    model = Credentials
+    template_name = 'inventories/editCredential.html'
+    form_class = CreateCredentialForm
+
+    def get_success_url(self):
+        return reverse('inventories:credentialIndex')
+
+
+class credentialIndex(generic.ListView):
+    model = Credentials
+    template_name = 'inventories/credentialIndex.html'
+    paginate_by = 10
+
+
+class deleteCredential(generic.DeleteView):
+    model = Credentials
+    template_name = 'inventories/deleteEntity.html'
+    success_url = '/inventories/credentialindex'
+
+    def post(self, request, *args, **kwargs):
+        self.delete(request, *args, **kwargs)
+        return JsonResponse({})
 
 
 class deleteInventory(generic.DeleteView):

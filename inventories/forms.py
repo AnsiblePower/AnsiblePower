@@ -1,8 +1,10 @@
 from django import forms
-from .models import Inventories, Hosts, Groups
+from django.core.exceptions import ValidationError
+from .models import Inventories, Hosts, Groups, Credentials
 from .fieldValidators import validateYAML
 from .widget import SelectHosts, SelectGroups
 from .fields import hostsField, groupField
+from Crypto.PublicKey import RSA
 
 
 class CreateInventoryForm(forms.ModelForm):
@@ -77,19 +79,22 @@ class CreateInventoryForm(forms.ModelForm):
 
 
 class CreateHostForm(forms.ModelForm):
+    # keyOrPasswordChoices = (('True', 'Use password'), ('False', 'Use Keys'))
     name = forms.CharField(max_length=255)
     description = forms.CharField(max_length=255, required=False)
     ipAddress = forms.GenericIPAddressField(required=False)
     port = forms.IntegerField(max_value=65535, min_value=1, required=False)
-    username = forms.CharField(max_length=255)
-    password = forms.CharField(max_length=255, widget=forms.PasswordInput, required=False)
+    # username = forms.CharField(max_length=255, required=False)
+    # password = forms.CharField(max_length=255, widget=forms.PasswordInput, required=False)
     group = forms.ModelMultipleChoiceField(queryset=Groups.objects.all(),
                                            widget=forms.HiddenInput, required=False)
+    # keyOrPassword = forms.NullBooleanField(widget=forms.RadioSelect(choices=keyOrPasswordChoices))
     inventory = forms.ModelMultipleChoiceField(queryset=Inventories.objects.all(),
                                                required=False)
     hostKey = forms.CharField(widget=forms.HiddenInput, required=False)
-    publicKey = forms.CharField(widget=forms.HiddenInput, required=False)
-    privateKey = forms.CharField(widget=forms.HiddenInput, required=False)
+    # publicKey = forms.CharField(widget=forms.HiddenInput, required=False)
+    # privateKey = forms.CharField(widget=forms.HiddenInput, required=False)
+    credentials = forms.ModelChoiceField(queryset=Credentials.objects.all(), required=False)
 
     class Meta:
         model = Hosts
@@ -109,6 +114,10 @@ class CreateHostForm(forms.ModelForm):
         if self.fields['inventory'].initial:
             self.cleaned_data['inventory'] = self.fields['inventory'].initial
         super(CreateHostForm, self).save()
+
+    # def is_valid(self):
+    #     print self
+    #     return super(CreateHostForm, self).is_valid()
 
 
 class CreateGroupForm(forms.ModelForm):
@@ -168,4 +177,52 @@ class CreateGroupForm(forms.ModelForm):
         super(CreateGroupForm, self).save()
 
 
+class CreateCredentialForm(forms.ModelForm):
+    keyOrPasswordChoices = ((True, 'Use password'), (False, 'Use Keys'))
+    name = forms.CharField(max_length=255)
+    description = forms.CharField(max_length=255, required=False)
+    keyOrPassword = forms.NullBooleanField(widget=forms.RadioSelect(choices=keyOrPasswordChoices))
+    username = forms.CharField(max_length=255, required=False)
+    password = forms.CharField(max_length=255, widget=forms.PasswordInput, required=False)
+    publicKey = forms.CharField(widget=forms.HiddenInput, required=False)
+    privateKey = forms.CharField(widget=forms.HiddenInput, required=False)
 
+    def __init__(self, *args, **kwargs):
+        super(CreateCredentialForm, self).__init__(*args, **kwargs)
+
+    def is_valid(self):
+        print "isValid"
+        print self.data['keyOrPassword']
+        if self.data['keyOrPassword']:
+            if not self.data['username']:
+                raise ValidationError('Error: ')
+        return super(CreateCredentialForm, self).is_valid()
+
+    def save(self, commit=True):
+        print "Save"
+        print self.instance.keyOrPassword
+        if not self.instance.keyOrPassword:
+            dbcred = None
+            try:
+                dbcred = Credentials.objects.get(pk=self.instance.pk)
+            except Credentials.DoesNotExist:
+                pass
+            if dbcred:
+                # method is using for update
+                pass
+            else:
+                # method is using for create
+                # SSH key pairs
+                new_key = RSA.generate(2048)
+                self.instance.publicKey = new_key.publickey().exportKey(format='OpenSSH')
+                self.instance.privateKey = new_key.exportKey()
+
+        return super(CreateCredentialForm, self).save()
+
+    class Meta:
+        model = Credentials
+        exclude = ['date_created', 'date_modified', ]
+
+    # def is_valid(self):
+    #     print self
+    #     return super(CreateCredentialForm, self).is_valid()
