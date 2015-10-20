@@ -190,13 +190,26 @@ class CreateCredentialForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(CreateCredentialForm, self).__init__(*args, **kwargs)
 
-    def is_valid(self):
-        print "isValid"
-        print self.data['keyOrPassword']
-        if self.data['keyOrPassword']:
-            if not self.data['username']:
-                raise ValidationError('Error: ')
-        return super(CreateCredentialForm, self).is_valid()
+    # def is_valid(self):
+    #     print "isValid"
+    #     print self.data['keyOrPassword']
+    #     if self.data['keyOrPassword']:
+    #         if not self.data['username']:
+    #             raise ValidationError('Error: ')
+    #     return super(CreateCredentialForm, self).is_valid()
+
+    def clean(self):
+        print "CLEAN"
+        cleaned_data = super(CreateCredentialForm, self).clean()
+        keyOrPassword = cleaned_data.get("keyOrPassword")
+        username = cleaned_data.get("username")
+        password = cleaned_data.get("password")
+        msg = "This field is required"
+        if keyOrPassword:
+            if not username:
+                self.add_error("username", msg)
+            elif not password and not self.instance.password:
+                self.add_error("password", msg)
 
     def save(self, commit=True):
         print "Save"
