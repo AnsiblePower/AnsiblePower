@@ -79,21 +79,15 @@ class CreateInventoryForm(forms.ModelForm):
 
 
 class CreateHostForm(forms.ModelForm):
-    # keyOrPasswordChoices = (('True', 'Use password'), ('False', 'Use Keys'))
     name = forms.CharField(max_length=255)
     description = forms.CharField(max_length=255, required=False)
     ipAddress = forms.GenericIPAddressField(required=False)
     port = forms.IntegerField(max_value=65535, min_value=1, required=False)
-    # username = forms.CharField(max_length=255, required=False)
-    # password = forms.CharField(max_length=255, widget=forms.PasswordInput, required=False)
     group = forms.ModelMultipleChoiceField(queryset=Groups.objects.all(),
                                            widget=forms.HiddenInput, required=False)
-    # keyOrPassword = forms.NullBooleanField(widget=forms.RadioSelect(choices=keyOrPasswordChoices))
     inventory = forms.ModelMultipleChoiceField(queryset=Inventories.objects.all(),
                                                required=False)
     hostKey = forms.CharField(widget=forms.HiddenInput, required=False)
-    # publicKey = forms.CharField(widget=forms.HiddenInput, required=False)
-    # privateKey = forms.CharField(widget=forms.HiddenInput, required=False)
     credentials = forms.ModelChoiceField(queryset=Credentials.objects.all(), required=False)
 
     class Meta:
@@ -113,11 +107,12 @@ class CreateHostForm(forms.ModelForm):
     def save(self, commit=True):
         if self.fields['inventory'].initial:
             self.cleaned_data['inventory'] = self.fields['inventory'].initial
+        # If update
+        if self.instance and self.instance.pk:
+            # If credentials set as None
+            if not self.cleaned_data['credentials']:
+                self.instance.credentials = None
         super(CreateHostForm, self).save()
-
-    # def is_valid(self):
-    #     print self
-    #     return super(CreateHostForm, self).is_valid()
 
 
 class CreateGroupForm(forms.ModelForm):
@@ -181,7 +176,7 @@ class CreateCredentialForm(forms.ModelForm):
     keyOrPasswordChoices = ((True, 'Use password'), (False, 'Use Keys'))
     name = forms.CharField(max_length=255)
     description = forms.CharField(max_length=255, required=False)
-    keyOrPassword = forms.NullBooleanField(widget=forms.RadioSelect(choices=keyOrPasswordChoices))
+    keyOrPassword = forms.NullBooleanField(widget=forms.RadioSelect(choices=keyOrPasswordChoices), required=False)
     username = forms.CharField(max_length=255, required=False)
     password = forms.CharField(max_length=255, widget=forms.PasswordInput, required=False)
     publicKey = forms.CharField(widget=forms.HiddenInput, required=False)
@@ -189,14 +184,16 @@ class CreateCredentialForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(CreateCredentialForm, self).__init__(*args, **kwargs)
+        if self.instance and self.instance.pk:
+            self.fields['publicKey'].widget = forms.Textarea()
+            self.fields['publicKey'].widget.attrs['readonly'] = True
 
-    # def is_valid(self):
-    #     print "isValid"
-    #     print self.data['keyOrPassword']
-    #     if self.data['keyOrPassword']:
-    #         if not self.data['username']:
-    #             raise ValidationError('Error: ')
-    #     return super(CreateCredentialForm, self).is_valid()
+    # Doing field as readonly
+    def clean_publicKey(self):
+        if self.instance and self.instance.pk:
+            return self.instance.publicKey
+        else:
+            return self.cleaned_data['publicKey']
 
     def clean(self):
         print "CLEAN"
@@ -205,6 +202,8 @@ class CreateCredentialForm(forms.ModelForm):
         username = cleaned_data.get("username")
         password = cleaned_data.get("password")
         msg = "This field is required"
+        if keyOrPassword == None:
+            self.add_error("keyOrPassword", msg)
         if keyOrPassword:
             if not username:
                 self.add_error("username", msg)
@@ -214,17 +213,32 @@ class CreateCredentialForm(forms.ModelForm):
     def save(self, commit=True):
         print "Save"
         print self.instance.keyOrPassword
-        if not self.instance.keyOrPassword:
+        # Update branch
+        if self.instance and self.instance.pk:
             dbcred = None
             try:
                 dbcred = Credentials.objects.get(pk=self.instance.pk)
             except Credentials.DoesNotExist:
                 pass
+            # method is using for update
             if dbcred:
-                # method is using for update
-                pass
-            else:
-                # method is using for create
+                # If type of authorization has been changed to user/password
+                if self.instance.keyOrPassword:
+                    self.instance.privateKey = None
+                    self.instance.publicKey = None
+                # If type of authorization has been changed to keys
+                else:
+                    self.instance.username = None
+                    self.instance.password = None
+                    if not dbcred.publicKey:
+                        # SSH key pairs
+                        new_key = RSA.generate(2048)
+                        self.instance.publicKey = new_key.publickey().exportKey(format='OpenSSH')
+                        self.instance.privateKey = new_key.exportKey()
+        # method is using for create
+        else:
+            # If using key authorization:
+            if not self.instance.keyOrPassword:
                 # SSH key pairs
                 new_key = RSA.generate(2048)
                 self.instance.publicKey = new_key.publickey().exportKey(format='OpenSSH')
@@ -235,7 +249,6 @@ class CreateCredentialForm(forms.ModelForm):
     class Meta:
         model = Credentials
         exclude = ['date_created', 'date_modified', ]
-
-    # def is_valid(self):
-    #     print self
-    #     return super(CreateCredentialForm, self).is_valid()
+        # widgets = {
+        #     'keyOrPassword': forms.RadioSelect
+        # }

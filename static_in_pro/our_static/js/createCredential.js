@@ -1,7 +1,7 @@
 $(document).ready(function(){
-    //hidePassword()
-    $(".has-error").removeClass("hidden")
-    $(".has-success").removeClass("hidden")
+    if ($('#id_keyOrPassword_0').prop("checked")){
+        showPassword()
+    }
 });
 
 $('#id_keyOrPassword_0').on("click", function(){
@@ -13,11 +13,11 @@ $('#id_keyOrPassword_1').on("click", function(){
 });
 
 function hidePassword(){
-    $('#id_username').parent().attr('class', 'hidden')
-    $('#id_password').parent().attr('class', 'hidden')
+    $('#id_password').parent().addClass('hidden')
+    $('#id_username').parent().addClass('hidden')
 }
 
 function showPassword(){
-    $('#id_username').parent().attr('class', '')
-    $('#id_password').parent().attr('class', '')
+    $('#id_username').parent().removeClass("hidden")
+    $('#id_password').parent().removeClass("hidden")
 }

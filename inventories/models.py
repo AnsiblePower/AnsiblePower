@@ -47,7 +47,7 @@ class Credentials(models.Model):
     date_modified = models.DateTimeField(auto_now=True)
     name = models.CharField(max_length=255)
     description = models.CharField(max_length=255, null=True)
-    keyOrPassword = models.NullBooleanField()
+    keyOrPassword = models.BooleanField()
     privateKey = EncryptedTextField(null=True)
     publicKey = models.TextField(null=True)
     username = models.CharField(max_length=255, null=True)
