@@ -5,15 +5,14 @@
 //$(document).ready(function () {
 //    setPlaybookID()
 //});
-
-$("button[id^='deletebutton']").click(function () {
+$(document).on("click", "button[id^='deletebutton']", function() {
     var modalwindow = $('#deleteconfirmmodal').modal('show');
     var pk = $(this).data('pk');
     var name = $(this).data('name');
     var postTarget = $(this).data('posttarget');
     modalwindow.find('.modal-body').html(name);
     var okbtn = modalwindow.find('.btn-ok');
-    okbtn.click(function () {
+    okbtn.off("click").on("click", function () {
         confirmDelete(postTarget, pk);
     })
 });
@@ -44,13 +43,15 @@ function setPlaybookID() {
 }
 
 function handleError(textStatus) {
-    console.log(textStatus)
+    console.log(textStatus);
     $('#deleteconfirmmodal').modal('hide')
 }
 
 function handleSuccess(successObj, pk) {
-    $('#row'.concat(pk)).collapse('hide');
-    $('#deleteconfirmmodal').modal('hide')
+    //$('#row'.concat(pk)).collapse('hide');
+    $('#deleteconfirmmodal').modal('hide');
+    var loadurl = window.location.href;
+    $('#group-index-data').load(loadurl.concat(" #group-index-data"))
 }
 
 function confirmDelete(postTarget, pk) {

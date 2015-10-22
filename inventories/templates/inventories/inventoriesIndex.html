@@ -6,7 +6,7 @@
 {% endblock breadcrumbs %}
 {% block jumbotron %}
     {{ block.super }}
-    <div>
+    <div id="group-index-data">
         <div class="col-md1 col-md-offset-11" align="right">
             <a href={% url 'inventories:createInventory' %} type="button" class="btn btn-info">
                 <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Add

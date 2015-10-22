@@ -1,10 +1,13 @@
 from django import forms
+from formtools.preview import FormPreview
+from django.http import HttpResponseRedirect
 from django.core.exceptions import ValidationError
 from .models import Inventories, Hosts, Groups, Credentials
 from .fieldValidators import validateYAML
 from .widget import SelectHosts, SelectGroups
 from .fields import hostsField, groupField
 from Crypto.PublicKey import RSA
+from django.contrib import messages
 
 
 class CreateInventoryForm(forms.ModelForm):
@@ -75,7 +78,7 @@ class CreateInventoryForm(forms.ModelForm):
                         print "Add: " + str(groupadd)
                         inventory.groups_set.add(*groupadd)
 
-        super(CreateInventoryForm, self).save()
+        return super(CreateInventoryForm, self).save()
 
 
 class CreateHostForm(forms.ModelForm):
@@ -112,13 +115,26 @@ class CreateHostForm(forms.ModelForm):
             # If credentials set as None
             if not self.cleaned_data['credentials']:
                 self.instance.credentials = None
-        super(CreateHostForm, self).save()
+            # If credentials set to key
+            # elif not self.cleaned_data['credentials'].credentials.keyOrPassword:
+
+        # If create
+        else:
+            print "Create host"
+
+        return super(CreateHostForm, self).save()
+
+
+class CreateHostPreview(FormPreview):
+    def done(self, request, cleaned_data):
+        # Do something with the cleaned_data, then redirect
+        # to a "success" page.
+        return HttpResponseRedirect('/inventory/hostindex')
 
 
 class CreateGroupForm(forms.ModelForm):
     name = forms.CharField(max_length=255)
     inventory = forms.ModelMultipleChoiceField(queryset=Inventories.objects.all(),
-                                               #widget=forms.HiddenInput,
                                                required=False)
     description = forms.CharField(max_length=255, required=False)
     hosts = hostsField(queryset=Hosts.objects.all(), required=False, widget=SelectHosts)
@@ -169,7 +185,7 @@ class CreateGroupForm(forms.ModelForm):
                         print "Add: " + str(hostadd)
                         group.hosts_set.add(*hostadd)
 
-        super(CreateGroupForm, self).save()
+        return super(CreateGroupForm, self).save()
 
 
 class CreateCredentialForm(forms.ModelForm):

@@ -6,7 +6,16 @@
 {% endblock breadcrumbs %}
 {% block jumbotron %}
     {{ block.super }}
-    <div>
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-success alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span></button>
+            {{ message|safe }}
+            </div>
+        {% endfor %}
+    {% endif %}
+    <div id="group-index-data">
         <div class="col-md1 col-md-offset-11" align="right">
             <a href={% url 'inventories:createGroup' %} type="button" class="btn btn-info">
                 <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Add

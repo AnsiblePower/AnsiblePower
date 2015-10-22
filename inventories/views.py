@@ -1,6 +1,8 @@
 from django.views import generic
-from django.http import JsonResponse
+from django.views.generic.edit import CreateView
+from django.http import JsonResponse, HttpResponse
 from django.core.urlresolvers import reverse
+from django.contrib.messages.views import SuccessMessageMixin
 from .models import Inventories, Hosts, Groups, Credentials
 from .forms import CreateInventoryForm, CreateHostForm, CreateGroupForm, CreateCredentialForm
 from Crypto.PublicKey import RSA
@@ -77,10 +79,19 @@ class editGroup(manageGroup):
     template_name = 'inventories/editGroup.html'
 
 
-class createGroup(generic.CreateView):
+class createGroup(SuccessMessageMixin, CreateView):
     form_class = CreateGroupForm
     model = Groups
     template_name = 'inventories/createGroup.html'
+    success_message = """Group <a href="{link}" class="alert-link">{groupname}</a> was added successfully
+    """
+
+    def get_success_message(self, cleaned_data):
+        return self.success_message.format(
+            cleaned_data,
+            groupname=self.object.name,
+            link=reverse('inventories:editGroup', kwargs={'pk': self.object.pk})
+        )
 
     def get_context_data(self, **kwargs):
         context = super(createGroup, self).get_context_data(**kwargs)
@@ -111,7 +122,7 @@ class deleteGroup(generic.DeleteView):
             print "Untarget group from inventory"
         else:
             print "Delete group"
-            # self.delete(request, *args, **kwargs)
+        self.delete(request, *args, **kwargs)
         return JsonResponse({})
 
 
