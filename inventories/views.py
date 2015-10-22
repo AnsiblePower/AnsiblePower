@@ -2,7 +2,7 @@ from django.views import generic
 from django.views.generic.edit import CreateView
 from django.http import JsonResponse, HttpResponse
 from django.core.urlresolvers import reverse
-from django.contrib.messages.views import SuccessMessageMixin
+from django.contrib.messages.views import SuccessMessageMixin, messages
 from .models import Inventories, Hosts, Groups, Credentials
 from .forms import CreateInventoryForm, CreateHostForm, CreateGroupForm, CreateCredentialForm
 from Crypto.PublicKey import RSA
@@ -92,6 +92,13 @@ class createGroup(SuccessMessageMixin, CreateView):
             groupname=self.object.name,
             link=reverse('inventories:editGroup', kwargs={'pk': self.object.pk})
         )
+
+    def form_valid(self, form):
+        formValid = super(createGroup, self).form_valid(form)
+        print self.object.pk
+        # TODO: implement same logic in addhost
+        messages.add_message(self.request, messages.INFO, "TESTING!!!")
+        return formValid
 
     def get_context_data(self, **kwargs):
         context = super(createGroup, self).get_context_data(**kwargs)

@@ -1,5 +1,4 @@
 from django import forms
-from formtools.preview import FormPreview
 from django.http import HttpResponseRedirect
 from django.core.exceptions import ValidationError
 from .models import Inventories, Hosts, Groups, Credentials
@@ -123,13 +122,6 @@ class CreateHostForm(forms.ModelForm):
             print "Create host"
 
         return super(CreateHostForm, self).save()
-
-
-class CreateHostPreview(FormPreview):
-    def done(self, request, cleaned_data):
-        # Do something with the cleaned_data, then redirect
-        # to a "success" page.
-        return HttpResponseRedirect('/inventory/hostindex')
 
 
 class CreateGroupForm(forms.ModelForm):
