@@ -97,7 +97,7 @@ class createGroup(SuccessMessageMixin, CreateView):
         formValid = super(createGroup, self).form_valid(form)
         print self.object.pk
         # TODO: implement same logic in addhost
-        messages.add_message(self.request, messages.INFO, "TESTING!!!")
+        messages.add_message(self.request, messages.ERROR, "TESTING!!!")
         return formValid
 
     def get_context_data(self, **kwargs):
@@ -190,6 +190,37 @@ class createHost(generic.CreateView):
         if 'inv_id' in self.kwargs:
             kwargs['inv_id'] = self.kwargs['inv_id']
         return kwargs
+
+    def form_valid(self, form):
+        formValid = super(createHost, self).form_valid(form)
+        print "FormVALID"
+        # If object was persisted to DB
+        if self.object.pk:
+            mySocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            if self.object.port:
+                port = self.object.port
+            else:
+                port = 22
+            if self.object.ipAddress:
+                address = self.object.ipAddress
+            else:
+                address = self.object.name
+            try:
+                mySocket.connect((address, port))
+                mySocket.close()
+            except socket.error, e:
+                msg = """WARRNING: host
+                <a href={pk} class="alert-link">{hostname}:{port}</a>
+                was added, but we can't connect to it\n
+                The error was: {error}""".format(
+                    hostname=address,
+                    port=port,
+                    error=str(e),
+                    pk=self.object.pk,
+                )
+                messages.add_message(self.request, messages.ERROR, msg)
+        # messages.add_message(self.request, messages.SUCCESS, "TESTING!!!")
+        return formValid
 
     # def form_valid(self, form):
     #     mySocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -287,3 +318,15 @@ class deleteHost(generic.DeleteView):
             # self.delete(request, *args, **kwargs)
         self.delete(self, request, *args, **kwargs)
         return JsonResponse({})
+
+
+def showPubKey(request, pk):
+    if request.method == 'GET':
+        try:
+            key = Credentials.objects.get(pk=pk).publicKey
+            # result = {'pubkey': key}
+            result = {'pubkey': "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\nbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"}
+            print result
+        except Credentials.DoesNotExist:
+            result = {'pubkey': None}
+        return JsonResponse(result)

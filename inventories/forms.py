@@ -7,7 +7,8 @@ from .widget import SelectHosts, SelectGroups
 from .fields import hostsField, groupField
 from Crypto.PublicKey import RSA
 from django.contrib import messages
-
+import socket
+import paramiko
 
 class CreateInventoryForm(forms.ModelForm):
     name = forms.CharField(max_length=255)
@@ -107,8 +108,29 @@ class CreateHostForm(forms.ModelForm):
             self.initial['variables'] = '---'
 
     def save(self, commit=True):
+        canConnect = False
         if self.fields['inventory'].initial:
             self.cleaned_data['inventory'] = self.fields['inventory'].initial
+        if self.cleaned_data['port']:
+            port = self.cleaned_data['port']
+        else:
+            port = 22
+        if self.cleaned_data['ipAddress']:
+            address = self.cleaned_data['ipAddress']
+        else:
+            address = self.cleaned_data['name']
+        mySocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        # Try to connect to host and obtain hostkey
+        try:
+            mySocket.connect((address, port))
+            myTransport = paramiko.Transport(mySocket)
+            myTransport.start_client()
+            self.instance.hostKey = myTransport.get_remote_server_key().get_base64()
+            myTransport.close()
+            mySocket.close()
+        except socket.error, e:
+            print str(e)
+
         # If update
         if self.instance and self.instance.pk:
             # If credentials set as None
@@ -119,6 +141,11 @@ class CreateHostForm(forms.ModelForm):
 
         # If create
         else:
+            # If credentials set to key
+            if not self.cleaned_data['credentials'].keyOrPassword:
+                # Try to push keys to host
+                pass
+
             print "Create host"
 
         return super(CreateHostForm, self).save()

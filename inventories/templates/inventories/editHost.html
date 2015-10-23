@@ -26,26 +26,39 @@
                     {% bootstrap_field form.ipAddress %}
                     {% bootstrap_field form.port %}
                     {% bootstrap_field form.description %}
-                    {#                {% bootstrap_field form.username %}#}
-                    {#                {% bootstrap_field form.password %}#}
-                    {% bootstrap_field form.credentials %}
+                    {% bootstrap_label "Credentials" %}
+                    <div class="row">
+                        <div class="col col-md-6">
+                            {% bootstrap_field form.credentials form_group_class="form-group" show_label=False %}
+                        </div>
+                        <div class="col col-md-3">
+                            <button id="showpublickkey" type="button" class="btn btn-default"
+                                    data-container="body" data-toggle="popover"
+                                    data-placement="top">
+                                Show PublicKey
+                            </button>
+                        </div>
+                    </div>
                     {% bootstrap_field form.inventory form_group_class="hidden" %}
-                    {% buttons %}
-                        <button type="submit" class="btn btn-primary">
-                            {% bootstrap_icon "ok" %} Save
-                        </button>
-                        {#                    <a href="{% url 'inventories:manageInventory' inv_pk %}" type="button" class="btn btn-default">#}
-                        {% if inv %}
-                            <a href="{% url 'inventories:manageInventory' inv.pk %}" type="button"
-                               class="btn btn-default">
-                                {% bootstrap_icon "remove" %} Cancel
-                            </a>
-                        {% else %}
-                            <a href="{% url 'inventories:hostIndex' %}" type="button" class="btn btn-default">
-                                {% bootstrap_icon "remove" %} Cancel
-                            </a>
-                        {% endif %}
-                    {% endbuttons %}
+                    <div class="row">
+                        <div class="col-md-6">
+                            {% buttons %}
+                                <button type="submit" class="btn btn-primary">
+                                    {% bootstrap_icon "ok" %} Save
+                                </button>
+                                {% if inv %}
+                                    <a href="{% url 'inventories:manageInventory' inv.pk %}" type="button"
+                                       class="btn btn-default">
+                                        {% bootstrap_icon "remove" %} Cancel
+                                    </a>
+                                {% else %}
+                                    <a href="{% url 'inventories:hostIndex' %}" type="button" class="btn btn-default">
+                                        {% bootstrap_icon "remove" %} Cancel
+                                    </a>
+                                {% endif %}
+                            {% endbuttons %}
+                        </div>
+                    </div>
                 </div>
                 <div class="col col-md-6">
                     {% bootstrap_field form.variables %}
@@ -57,4 +70,5 @@
 {% endblock jumbotron %}
 {% block jsload %}
     {{ block.super }}
+    <script src="{% static 'js/editHost.js' %}"></script>
 {% endblock jsload %}

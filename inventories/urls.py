@@ -27,4 +27,5 @@ urlpatterns = [
     url(r'^deletegroup/(?P<pk>\d+)/(?P<inv_id>\d+)/$', views.deleteGroup.as_view(), name='deleteGroup'),
     url(r'^deletehost/(?P<pk>\d+)/$', views.deleteHost.as_view(), name='deleteHost'),
     url(r'^deletehost/(?P<pk>\d+)/(?P<inv_id>\d+)/$', views.deleteHost.as_view(), name='deleteHost'),
+    url(r'^showpubkey/(?P<pk>\d+)/$', views.showPubKey, name='showPubKey'),
 ]
